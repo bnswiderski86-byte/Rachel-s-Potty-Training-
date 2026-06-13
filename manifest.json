@@ -1,0 +1,21 @@
+{
+  "name": "Rachel's Potty Journey",
+  "short_name": "Rachel 🚽",
+  "description": "Potty training tracker for Rachel",
+  "start_url": "/Potty-Training-Rachel/",
+  "display": "standalone",
+  "background_color": "#fff5f9",
+  "theme_color": "#ff5994",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
