@@ -1,0 +1,2309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ff5994">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="application-name" content="Rachel 🚽">
+<title>Rachel's Potty Journey 🌸</title>
+<link href="https://fonts.googleapis.com/css2?family=Handlee&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink: #ff5994;
+    --orange: #ff9668;
+    --yellow: #edff8f;
+    --green: #84ff9f;
+    --blue: #82b6ff;
+    --pink-dark: #d93d78;
+    --orange-dark: #d96c3e;
+    --green-dark: #4dcc6b;
+    --blue-dark: #4a88e8;
+    --white: #ffffff;
+    --soft-bg: #fff9f5;
+    --text-dark: #2a2a3e;
+    --text-mid: #4a4a6a;
+    --shadow: 0 4px 24px rgba(255,89,148,0.13);
+    --shadow-lg: 0 8px 40px rgba(130,182,255,0.18);
+    --radius: 20px;
+    --radius-sm: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(135deg, #fff5f9 0%, #f0f8ff 50%, #f5fff8 100%);
+    min-height: 100vh;
+    color: var(--text-dark);
+  }
+
+  h1, h2, h3, .handmade {
+    font-family: 'Handlee', cursive;
+  }
+
+  /* ── NAV ── */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 3px solid var(--pink);
+    padding: 0;
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    box-shadow: var(--shadow);
+  }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav-tab {
+    flex: none;
+    padding: 14px 20px;
+    cursor: pointer;
+    font-family: 'Handlee', cursive;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-mid);
+    border: none;
+    background: none;
+    border-bottom: 4px solid transparent;
+    transition: all 0.25s;
+    white-space: nowrap;
+    position: relative;
+  }
+  .nav-tab:hover { color: var(--pink); background: rgba(255,89,148,0.06); }
+  .nav-tab.active {
+    color: var(--pink);
+    border-bottom-color: var(--pink);
+    background: rgba(255,89,148,0.08);
+  }
+  .nav-emoji { font-size: 1.1rem; margin-right: 5px; }
+
+  /* ── SCREENS ── */
+  .screen { display: none; padding: 24px 16px 80px; max-width: 900px; margin: 0 auto; }
+  .screen.active { display: block; }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, var(--pink) 0%, var(--orange) 100%);
+    border-radius: 24px;
+    padding: 36px 28px;
+    text-align: center;
+    color: white;
+    margin-bottom: 28px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(255,89,148,0.35);
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.08'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  .hero h1 { font-size: 2.2rem; margin-bottom: 8px; text-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+  .hero p { font-size: 1.05rem; opacity: 0.92; font-family: 'Nunito'; }
+  .hero-emojis { font-size: 2.5rem; margin-bottom: 12px; }
+
+  /* ── CARDS ── */
+  .card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    border: 2px solid transparent;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+  .card-pink { border-color: var(--pink); }
+  .card-orange { border-color: var(--orange); }
+  .card-yellow { border-color: #c8d96b; background: #fffef0; }
+  .card-green { border-color: var(--green-dark); }
+  .card-blue { border-color: var(--blue); }
+
+  .card-title {
+    font-family: 'Handlee', cursive;
+    font-size: 1.4rem;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-title .badge {
+    padding: 3px 12px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-family: 'Nunito';
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── CHECKLIST ── */
+  .checklist { list-style: none; }
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .check-box {
+    width: 26px; height: 26px;
+    border: 3px solid var(--pink);
+    border-radius: 8px;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    font-size: 1rem;
+    background: white;
+    margin-top: 1px;
+  }
+  .check-box.checked { background: var(--pink); color: white; border-color: var(--pink); }
+  .check-text.checked-text { text-decoration: line-through; opacity: 0.5; }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap { margin: 12px 0; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-mid); margin-bottom: 6px; font-weight: 600; }
+  .progress-bar {
+    height: 16px; border-radius: 50px;
+    background: #f0f0f5;
+    overflow: hidden;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.08);
+  }
+  .progress-fill {
+    height: 100%; border-radius: 50px;
+    transition: width 0.6s cubic-bezier(.4,0,.2,1);
+    position: relative;
+  }
+  .progress-fill::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+    animation: shimmer 2s infinite;
+  }
+  @keyframes shimmer { 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
+
+  /* ── PHASE TIMELINE ── */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before {
+    content: '';
+    position: absolute; left: 10px; top: 0; bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--pink), var(--orange), var(--yellow), var(--green), var(--blue));
+    border-radius: 3px;
+  }
+  .phase-item {
+    position: relative;
+    margin-bottom: 20px;
+    background: white;
+    border-radius: var(--radius-sm);
+    padding: 18px 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    border-left: 4px solid var(--pink);
+  }
+  .phase-item::before {
+    content: '';
+    position: absolute;
+    left: -38px; top: 20px;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid var(--pink);
+    box-shadow: 0 0 0 3px rgba(255,89,148,0.15);
+  }
+  .phase-item.phase-2 { border-left-color: var(--orange); }
+  .phase-item.phase-2::before { border-color: var(--orange); }
+  .phase-item.phase-3 { border-left-color: #c8d96b; }
+  .phase-item.phase-3::before { border-color: #c8d96b; }
+  .phase-item.phase-4 { border-left-color: var(--green-dark); }
+  .phase-item.phase-4::before { border-color: var(--green-dark); }
+  .phase-week { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--pink); margin-bottom: 4px; }
+  .phase-item.phase-2 .phase-week { color: var(--orange-dark); }
+  .phase-item.phase-3 .phase-week { color: #8a9a00; }
+  .phase-item.phase-4 .phase-week { color: var(--green-dark); }
+  .phase-title { font-family: 'Handlee', cursive; font-size: 1.15rem; margin-bottom: 8px; }
+  .phase-body { font-size: 0.88rem; color: var(--text-mid); line-height: 1.65; }
+  .phase-body ul { list-style: none; padding: 0; }
+  .phase-body li::before { content: '→ '; color: var(--pink); font-weight: 700; }
+
+  /* ── TRACKER ── */
+  .tracker-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    gap: 8px;
+    margin: 12px 0;
+  }
+  .tracker-cell {
+    aspect-ratio: 1;
+    border-radius: 12px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    cursor: pointer;
+    border: 2px solid #e8e8f0;
+    background: white;
+    transition: all 0.2s;
+    font-size: 1.5rem;
+    position: relative;
+  }
+  .tracker-cell.success { background: var(--green); border-color: var(--green-dark); }
+  .tracker-cell.accident { background: #ffe0e0; border-color: #ff9999; }
+  .tracker-cell.close { background: var(--yellow); border-color: #c8d96b; }
+  .tracker-cell.dry { background: var(--blue); border-color: var(--blue-dark); }
+  .tracker-cell span.cell-time { font-size: 0.6rem; color: var(--text-mid); font-weight: 700; font-family: 'Nunito'; }
+
+  .tracker-legend { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 600; }
+  .legend-dot { width: 18px; height: 18px; border-radius: 6px; }
+
+  .log-entry-form { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 16px; }
+  .log-btn {
+    padding: 10px 16px;
+    border-radius: 50px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    font-family: 'Nunito';
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .log-btn-success { background: var(--green); border-color: var(--green-dark); color: var(--text-dark); }
+  .log-btn-accident { background: #ffe0e0; border-color: #ff9999; color: #aa2222; }
+  .log-btn-close { background: var(--yellow); border-color: #c8d96b; color: #555500; }
+  .log-btn-dry { background: var(--blue); border-color: var(--blue-dark); color: #1a3a7a; }
+  .log-btn:hover { transform: scale(1.06); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+  .log-btn:active { transform: scale(0.97); }
+
+  /* ── TIMERS ── */
+  .timer-display {
+    text-align: center;
+    padding: 32px 20px;
+    background: linear-gradient(135deg, var(--blue) 0%, #a8d4ff 100%);
+    border-radius: 24px;
+    margin-bottom: 20px;
+    color: var(--text-dark);
+    box-shadow: 0 6px 24px rgba(130,182,255,0.35);
+  }
+  .timer-clock {
+    font-family: 'Handlee', cursive;
+    font-size: 4rem;
+    letter-spacing: 0.05em;
+    color: #1a3a7a;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin: 10px 0;
+  }
+  .timer-label { font-size: 0.95rem; font-weight: 700; color: #2a4a8a; margin-bottom: 6px; }
+  .timer-phase { font-size: 0.82rem; color: #3a5a9a; margin-top: 6px; }
+
+  .timer-btns { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 16px; }
+  .t-btn {
+    padding: 10px 22px;
+    border-radius: 50px;
+    border: 2px solid white;
+    cursor: pointer;
+    font-family: 'Handlee', cursive;
+    font-size: 1rem;
+    font-weight: 700;
+    transition: all 0.2s;
+    background: white;
+    color: var(--text-dark);
+  }
+  .t-btn:hover { transform: scale(1.07); box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
+  .t-btn.primary { background: var(--pink); color: white; border-color: var(--pink-dark); }
+  .t-btn.danger { background: #ff6b6b; color: white; border-color: #cc4444; }
+
+  .interval-picker {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 8px;
+    margin: 14px 0;
+  }
+  .interval-option {
+    padding: 12px 8px;
+    border-radius: var(--radius-sm);
+    border: 2px solid #e0e0ee;
+    cursor: pointer;
+    text-align: center;
+    font-family: 'Handlee', cursive;
+    font-size: 1rem;
+    transition: all 0.2s;
+    background: white;
+  }
+  .interval-option.selected {
+    background: var(--pink);
+    border-color: var(--pink-dark);
+    color: white;
+  }
+  .interval-option .interval-min { display: block; font-size: 1.3rem; font-weight: 700; }
+  .interval-option .interval-lbl { display: block; font-size: 0.7rem; font-family: 'Nunito'; }
+
+  /* ── TIPS GRID ── */
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin: 16px 0;
+  }
+  .tip-card {
+    background: white;
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    border-left: 5px solid var(--pink);
+    box-shadow: 0 3px 14px rgba(0,0,0,0.07);
+    transition: transform 0.2s;
+  }
+  .tip-card:hover { transform: translateY(-3px); }
+  .tip-card.tip-orange { border-left-color: var(--orange); }
+  .tip-card.tip-yellow { border-left-color: #c8d96b; }
+  .tip-card.tip-green { border-left-color: var(--green-dark); }
+  .tip-card.tip-blue { border-left-color: var(--blue); }
+  .tip-icon { font-size: 2rem; margin-bottom: 10px; display: block; }
+  .tip-title { font-family: 'Handlee', cursive; font-size: 1.1rem; margin-bottom: 8px; color: var(--text-dark); }
+  .tip-body { font-size: 0.85rem; color: var(--text-mid); line-height: 1.6; }
+
+  /* ── REWARDS ── */
+  .star-board {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 16px 0;
+    justify-content: center;
+  }
+  .star {
+    font-size: 2.2rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+    filter: grayscale(1);
+    opacity: 0.4;
+  }
+  .star.lit { filter: none; opacity: 1; animation: starPop 0.35s ease; }
+  @keyframes starPop {
+    0%{transform:scale(0.5) rotate(-20deg)}
+    60%{transform:scale(1.3) rotate(10deg)}
+    100%{transform:scale(1) rotate(0deg)}
+  }
+
+  .reward-row {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px; background: #f8f8ff; border-radius: var(--radius-sm);
+    margin-bottom: 10px;
+    border: 2px solid #e8e8f5;
+    transition: all 0.2s;
+  }
+  .reward-row:hover { border-color: var(--pink); background: #fff5f9; }
+  .reward-emoji { font-size: 2rem; flex-shrink: 0; }
+  .reward-info { flex: 1; }
+  .reward-name { font-family: 'Handlee', cursive; font-size: 1.05rem; }
+  .reward-stars { font-size: 0.8rem; color: var(--text-mid); }
+  .reward-unlock { font-size: 0.75rem; padding: 5px 12px; border-radius: 50px; background: var(--green); color: var(--text-dark); font-weight: 700; border: none; cursor: pointer; display: none; }
+  .reward-unlock.show { display: block; }
+
+  /* ── STEPS / TASK ANALYSIS ── */
+  .steps-chain {
+    counter-reset: step;
+    list-style: none;
+  }
+  .step-item {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    position: relative;
+  }
+  .step-num {
+    width: 34px; height: 34px; flex-shrink: 0;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--pink), var(--orange));
+    color: white;
+    font-family: 'Handlee', cursive;
+    font-size: 1.05rem;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    box-shadow: 0 3px 10px rgba(255,89,148,0.3);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .step-num.done { background: linear-gradient(135deg, var(--green-dark), var(--green)); }
+  .step-num:hover { transform: scale(1.1); }
+  .step-content { flex: 1; }
+  .step-name { font-weight: 700; font-size: 0.95rem; }
+  .step-hint { font-size: 0.82rem; color: var(--text-mid); margin-top: 3px; }
+
+  /* ── LOG TABLE ── */
+  .log-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  .log-table th { padding: 10px 12px; background: var(--pink); color: white; font-family: 'Handlee', cursive; font-size: 1rem; text-align: left; }
+  .log-table th:first-child { border-radius: var(--radius-sm) 0 0 0; }
+  .log-table th:last-child { border-radius: 0 var(--radius-sm) 0 0; }
+  .log-table td { padding: 9px 12px; border-bottom: 1px solid #f0f0f8; }
+  .log-table tr:last-child td { border-bottom: none; }
+  .log-table tr:nth-child(even) td { background: #fafafe; }
+  .log-badge { padding: 3px 10px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; }
+  .badge-success { background: var(--green); color: #1a5a2a; }
+  .badge-accident { background: #ffe0e0; color: #aa2222; }
+  .badge-close { background: var(--yellow); color: #5a5500; }
+  .badge-dry { background: var(--blue); color: #1a3a7a; }
+
+  /* ── ANXIETY TOOLKIT ── */
+  .anxiety-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+    margin: 16px 0;
+  }
+  .anxiety-card {
+    background: white;
+    border-radius: var(--radius-sm);
+    padding: 20px 16px;
+    text-align: center;
+    box-shadow: 0 3px 14px rgba(0,0,0,0.08);
+    cursor: pointer;
+    transition: all 0.25s;
+    border: 2px solid transparent;
+  }
+  .anxiety-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--blue); }
+  .anxiety-card .anxiety-icon { font-size: 2.8rem; margin-bottom: 10px; }
+  .anxiety-card .anxiety-title { font-family: 'Handlee', cursive; font-size: 1rem; color: var(--text-dark); margin-bottom: 6px; }
+  .anxiety-card .anxiety-body { font-size: 0.78rem; color: var(--text-mid); line-height: 1.5; }
+
+  /* ── CELEBRATION ── */
+  .confetti-container { position: fixed; inset: 0; pointer-events: none; z-index: 1000; }
+  .confetti-piece {
+    position: absolute;
+    width: 12px; height: 12px;
+    animation: confettiFall 2.5s ease-out forwards;
+    border-radius: 2px;
+  }
+  @keyframes confettiFall {
+    0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* ── STATS ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .stat-card {
+    background: white;
+    border-radius: var(--radius-sm);
+    padding: 18px 14px;
+    text-align: center;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+  }
+  .stat-num {
+    font-family: 'Handlee', cursive;
+    font-size: 2.2rem;
+    color: var(--pink);
+    display: block;
+  }
+  .stat-lbl { font-size: 0.78rem; color: var(--text-mid); font-weight: 600; }
+
+  /* ── WEEK NAVIGATOR ── */
+  .week-nav { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+  .week-nav button { padding: 8px 16px; border-radius: 50px; border: 2px solid var(--pink); background: white; cursor: pointer; font-family: 'Handlee', cursive; font-size: 1rem; transition: all 0.2s; }
+  .week-nav button:hover { background: var(--pink); color: white; }
+  .week-nav .week-label { font-family: 'Handlee', cursive; font-size: 1.2rem; flex: 1; text-align: center; }
+
+  /* ── ACCORDION ── */
+  .accordion { border-radius: var(--radius-sm); overflow: hidden; margin-bottom: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.07); }
+  .accordion-header {
+    padding: 16px 20px;
+    background: white;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: 'Handlee', cursive;
+    font-size: 1.05rem;
+    border-left: 5px solid var(--pink);
+    transition: background 0.2s;
+  }
+  .accordion-header:hover { background: #fff5f9; }
+  .accordion-header.open { background: #fff0f5; }
+  .accordion-arrow { transition: transform 0.3s; font-size: 1.1rem; }
+  .accordion-header.open .accordion-arrow { transform: rotate(180deg); }
+  .accordion-body { display: none; padding: 18px 20px; background: #fff8fb; font-size: 0.88rem; line-height: 1.7; color: var(--text-mid); border-left: 5px solid var(--pink); }
+  .accordion-body.open { display: block; }
+
+  /* ── FLUID TRACKER ── */
+  .fluid-bar { margin: 10px 0; }
+  .fluid-icons { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .fluid-cup { font-size: 1.6rem; cursor: pointer; filter: grayscale(1); opacity: 0.4; transition: all 0.2s; }
+  .fluid-cup.filled { filter: none; opacity: 1; }
+
+  /* ── BREATHING ── */
+  .breathe-circle {
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--blue) 0%, #c0d8ff 100%);
+    margin: 20px auto;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Handlee', cursive;
+    font-size: 1.1rem;
+    color: #1a3a7a;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.5s ease-in-out;
+    box-shadow: 0 0 0 0 rgba(130,182,255,0.5);
+  }
+  .breathe-circle.inhale {
+    transform: scale(1.5);
+    box-shadow: 0 0 0 30px rgba(130,182,255,0.15);
+  }
+  .breathe-circle.hold {
+    transform: scale(1.5);
+    background: radial-gradient(circle, var(--green) 0%, #c0ffcf 100%);
+  }
+  .breathe-circle.exhale {
+    transform: scale(1);
+    background: radial-gradient(circle, var(--pink) 0%, #ffc0d5 100%);
+  }
+
+  /* ── BUTTONS GENERAL ── */
+  .btn {
+    padding: 12px 24px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Handlee', cursive;
+    font-size: 1rem;
+    font-weight: 700;
+    transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-pink { background: var(--pink); color: white; box-shadow: 0 4px 14px rgba(255,89,148,0.35); }
+  .btn-pink:hover { background: var(--pink-dark); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,89,148,0.45); }
+  .btn-green { background: var(--green); color: var(--text-dark); }
+  .btn-green:hover { background: var(--green-dark); color: white; transform: translateY(-2px); }
+  .btn-blue { background: var(--blue); color: #1a3a7a; }
+  .btn-blue:hover { background: var(--blue-dark); color: white; transform: translateY(-2px); }
+  .btn-sm { padding: 7px 16px; font-size: 0.85rem; }
+  .btn-outline { background: white; border: 2px solid var(--pink); color: var(--pink); }
+  .btn-outline:hover { background: var(--pink); color: white; }
+
+  /* ── INFO BOXES ── */
+  .info-box {
+    background: linear-gradient(135deg, var(--blue) 0%, #c5d8ff 100%);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: 0.9rem;
+    border-left: 4px solid var(--blue-dark);
+  }
+  .info-box.warn {
+    background: linear-gradient(135deg, var(--yellow) 0%, #f0f5b0 100%);
+    border-left-color: #c8d96b;
+  }
+  .info-box.success {
+    background: linear-gradient(135deg, var(--green) 0%, #c0ffcf 100%);
+    border-left-color: var(--green-dark);
+  }
+
+  /* ── SECTION LABELS ── */
+  .section-label {
+    font-family: 'Handlee', cursive;
+    font-size: 1.6rem;
+    margin: 28px 0 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1; height: 2px;
+    background: linear-gradient(to right, var(--pink), transparent);
+    border-radius: 1px;
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: white; border-radius: var(--radius); padding: 32px; max-width: 480px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.25); animation: modalIn 0.3s ease; }
+  @keyframes modalIn { from{transform:scale(0.85);opacity:0} to{transform:scale(1);opacity:1} }
+  .modal h2 { font-family: 'Handlee', cursive; font-size: 1.7rem; margin-bottom: 14px; }
+  .modal-close { float: right; font-size: 1.5rem; cursor: pointer; background: none; border: none; color: var(--text-mid); }
+
+  /* ── NOTIFICATION ── */
+  .notif {
+    position: fixed; top: 70px; right: 16px; z-index: 300;
+    background: white;
+    border-radius: var(--radius-sm);
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    display: flex; align-items: center; gap: 12px;
+    max-width: 320px;
+    animation: notifIn 0.4s ease;
+    border-left: 5px solid var(--green-dark);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  @keyframes notifIn {
+    from { transform: translateX(120%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  /* ── VISUAL SCHEDULE ── */
+  .visual-schedule {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 14px 0;
+  }
+  .vs-step {
+    background: white;
+    border-radius: var(--radius-sm);
+    padding: 14px 12px;
+    text-align: center;
+    border: 2px solid #e8e8f5;
+    min-width: 80px;
+    flex: 1;
+    min-width: 80px;
+    max-width: 120px;
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+  }
+  .vs-step.done { border-color: var(--green-dark); background: var(--green); }
+  .vs-step .vs-icon { font-size: 2.2rem; display: block; margin-bottom: 6px; }
+  .vs-step .vs-label { font-size: 0.7rem; font-weight: 700; color: var(--text-mid); }
+  .vs-step.done .vs-label { color: var(--text-dark); }
+  .vs-step::after {
+    content: '✓';
+    position: absolute; top: -8px; right: -8px;
+    width: 20px; height: 20px;
+    background: var(--green-dark);
+    color: white;
+    border-radius: 50%;
+    font-size: 0.65rem;
+    display: none;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+  }
+  .vs-step.done::after { display: flex; }
+
+  /* Tags */
+  .tag { display: inline-block; padding: 3px 10px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; margin: 2px; }
+  .tag-pink { background: rgba(255,89,148,0.15); color: var(--pink-dark); }
+  .tag-blue { background: rgba(130,182,255,0.2); color: var(--blue-dark); }
+  .tag-green { background: rgba(132,255,159,0.25); color: #2a8a3a; }
+  .tag-orange { background: rgba(255,150,104,0.2); color: var(--orange-dark); }
+
+  /* Inline input */
+  input[type=text], select, textarea {
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    border: 2px solid #e0e0ee;
+    font-family: 'Nunito';
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+    background: white;
+  }
+  input[type=text]:focus, select:focus, textarea:focus { border-color: var(--pink); }
+
+  /* Responsive tweaks */
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 1.7rem; }
+    .timer-clock { font-size: 3rem; }
+    .tips-grid { grid-template-columns: 1fr; }
+    .anxiety-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* Tab-specific colors */
+  .tab-tracker .card-title { color: var(--orange-dark); }
+  .tab-anxiety .card-title { color: var(--blue-dark); }
+  .tab-tips .card-title { color: var(--green-dark); }
+  .tab-rewards .card-title { color: var(--pink); }
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="mainNav">
+  <button class="nav-tab active" onclick="showScreen('home')" id="tab-home">
+    <span class="nav-emoji">🏠</span> Home
+  </button>
+  <button class="nav-tab" onclick="showScreen('prepare')" id="tab-prepare">
+    <span class="nav-emoji">📋</span> Get Ready
+  </button>
+  <button class="nav-tab" onclick="showScreen('plan')" id="tab-plan">
+    <span class="nav-emoji">🗓️</span> 6-Week Plan
+  </button>
+  <button class="nav-tab" onclick="showScreen('timer')" id="tab-timer">
+    <span class="nav-emoji">⏱️</span> Timer
+  </button>
+  <button class="nav-tab" onclick="showScreen('tracker')" id="tab-tracker">
+    <span class="nav-emoji">📊</span> Tracker
+  </button>
+  <button class="nav-tab" onclick="showScreen('visual')" id="tab-visual">
+    <span class="nav-emoji">🖼️</span> Visual Steps
+  </button>
+  <button class="nav-tab" onclick="showScreen('anxiety')" id="tab-anxiety">
+    <span class="nav-emoji">💙</span> Calm Corner
+  </button>
+  <button class="nav-tab" onclick="showScreen('rewards')" id="tab-rewards">
+    <span class="nav-emoji">⭐</span> Rewards
+  </button>
+  <button class="nav-tab" onclick="showScreen('tips')" id="tab-tips">
+    <span class="nav-emoji">💡</span> Tips & Science
+  </button>
+</nav>
+
+<!-- ═══════════════ HOME ═══════════════ -->
+<div class="screen active" id="screen-home">
+  <div class="hero">
+    <div class="hero-emojis">🚽 🌸 ⭐ 🦋</div>
+    <h1>Rachel's Potty Journey</h1>
+    <p>Evidence-based support for neurotypical 3-year-old girls &bull; Goal: 3–6 weeks</p>
+  </div>
+
+  <div class="info-box">
+    <strong>📌 How to Use This App</strong><br>
+    Start at <em>Get Ready</em> to confirm readiness, follow the <em>6-Week Plan</em>, set your <em>Timer</em> for scheduled sits, log everything in the <em>Tracker</em>, and use the <em>Calm Corner</em> when things get hard. The <em>Rewards</em> board keeps Rachel excited and motivated!
+  </div>
+
+  <div class="stats-row" id="homeStats">
+    <div class="stat-card">
+      <span class="stat-num" id="stat-successes">0</span>
+      <span class="stat-lbl">🎉 Successes</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num" id="stat-accidents">0</span>
+      <span class="stat-lbl">💧 Accidents</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num" id="stat-stars">0</span>
+      <span class="stat-lbl">⭐ Stars Earned</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num" id="stat-days">0</span>
+      <span class="stat-lbl">📅 Days Training</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num" id="stat-streak">0</span>
+      <span class="stat-lbl">🔥 Day Streak</span>
+    </div>
+  </div>
+
+  <div class="section-label">🏆 Today's Quick Log</div>
+  <div class="card card-pink">
+    <div class="card-title">Log a Visit</div>
+    <div class="log-entry-form">
+      <button class="log-btn log-btn-success" onclick="quickLog('success')">🎉 Success!</button>
+      <button class="log-btn log-btn-close" onclick="quickLog('close')">🙌 Close Call</button>
+      <button class="log-btn log-btn-accident" onclick="quickLog('accident')">💧 Accident</button>
+      <button class="log-btn log-btn-dry" onclick="quickLog('dry')">✅ Stayed Dry</button>
+    </div>
+    <p style="font-size:0.82rem;color:var(--text-mid);">Tap any button to instantly log and earn a star for successes!</p>
+  </div>
+
+  <div class="section-label">📌 Key Science Reminders</div>
+  <div class="card card-blue">
+    <ul class="checklist" style="font-size:0.9rem;">
+      <li><span>🧠</span><span>Most neurotypical 3-year-olds complete daytime training in 3–6 weeks — readiness matters more than age</span></li>
+      <li><span>⏱️</span><span>Start with every 10-15 min sits; success rate dramatically increases with high fluid intake days</span></li>
+      <li><span>👖</span><span>Switch to real underwear ASAP — pull-ups mask wetness and slow learning</span></li>
+      <li><span>🎁</span><span>Praise effort, not just success — "great trying!" is just as powerful as the sticker for neurotypical kids</span></li>
+      <li><span>🔕</span><span>Never punish accidents — neutral response, then re-route to potty, change clothes</span></li>
+      <li><span>💧</span><span>Increase fluids on training days — more chances = more practice = faster mastery</span></li>
+    </ul>
+  </div>
+
+  <div class="card card-green">
+    <div class="card-title">🔔 Timer Status</div>
+    <div id="homeTimerStatus" style="font-family:'Handlee',cursive;font-size:1.2rem;color:var(--text-mid);">No timer running. Go to ⏱️ Timer tab to start!</div>
+  </div>
+</div>
+
+<!-- ═══════════════ GET READY ═══════════════ -->
+<div class="screen" id="screen-prepare">
+  <div class="hero" style="background:linear-gradient(135deg,var(--orange) 0%,var(--yellow) 100%);color:var(--text-dark);">
+    <div class="hero-emojis">📋 🧸 🚽</div>
+    <h1>Before You Start</h1>
+    <p>Readiness checklist, environment setup, and what to gather</p>
+  </div>
+
+  <div class="section-label">✅ Rachel's Readiness Checklist</div>
+  <div class="card card-orange">
+    <div class="card-title">Is Rachel Ready? <span class="badge" style="background:var(--orange);color:white;">Check each sign</span></div>
+    <div id="readinessProgress" class="progress-wrap">
+      <div class="progress-label"><span>Readiness Score</span><span id="readPct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="readFill" style="width:0%;background:linear-gradient(90deg,var(--orange),var(--yellow));"></div></div>
+    </div>
+    <ul class="checklist" id="readinessList">
+      <li><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">Can stay dry for at least 1 hour</span></li>
+      <li><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">Shows awareness of being wet or soiled (pulling at diaper, signs of discomfort)</span></li>
+      <li><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">Has some predictable schedule (urinates around consistent times)</span></li>
+      <li><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">Can sit on a chair or surface for 2-3 minutes</span></li>
+      <li><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">Can follow a simple one-step instruction with or without gestures</span></li>
+      <li><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">Responds to a reward or praise (some form of positive reinforcement works)</span></li>
+      <li><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">Bowel movements are somewhat predictable (timing can be anticipated)</span></li>
+      <li><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">Can pull pants up/down with physical assistance</span></li>
+      <li><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">Has a preferred reward / highly motivating item identified</span></li>
+      <li><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">Is not currently experiencing major transitions, illness, or family stress</span></li>
+    </ul>
+    <div class="info-box warn" style="margin-top:14px;">
+      <strong>Readiness beats age every time.</strong> The AAP says most kids are ready between 2–3.5 years. At 3, Rachel likely has the physical control and language skills to make this click fast — if she's showing 6+ signs, you're good to go. If she resists, ease off for 2 weeks and try again.
+    </div>
+  </div>
+
+  <div class="section-label">🛒 What You Need to Gather</div>
+  <div class="card card-pink">
+    <div class="card-title">Shopping + Setup List</div>
+    <ul class="checklist" id="shoppingList">
+      <li><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">🪑 Potty seat reducer / insert (so he doesn't feel like he'll fall in)</span></li>
+      <li><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">🦶 Footstool under toilet for stability and proper squatting posture</span></li>
+      <li><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">👖 6–10 pairs of real cotton underwear (NO pull-ups during training days)</span></li>
+      <li><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">🧴 Baby wipes — they make front-to-back wiping easier for beginners (transition to paper once she's confident)</span></li>
+      <li><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">🎁 Sticker chart + reward stash: Rachel's favorite stickers and small treats, reserved ONLY for potty wins</span></li>
+      <li><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">🖼️ Visual schedule cards for bathroom wall (print from Visual Steps tab)</span></li>
+      <li><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">📱 This app on your phone or tablet for timer + tracking</span></li>
+      <li><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">🎧 Child-size noise-canceling or comfort headphones (for flush anxiety)</span></li>
+      <li><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">💡 Soft nightlight or lamp (dim option) for bathroom comfort</span></li>
+      <li><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">🧸 Comfort object or small toy for her to hold while sitting — something special for potty time only</span></li>
+      <li><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">💧 Extra juice, water, milk — high fluid intake boosts practice opportunities</span></li>
+      <li><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">🗒️ Accident log notebook (or use Tracker tab)</span></li>
+    </ul>
+  </div>
+
+  <div class="section-label">🛁 Bathroom Setup</div>
+  <div class="card card-blue">
+    <div class="card-title">Make the Bathroom Feel SAFE</div>
+    <div class="tips-grid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr));">
+      <div class="tip-card tip-blue">
+        <span class="tip-icon">🔇</span>
+        <div class="tip-title">Flush Fear</div>
+        <div class="tip-body">Let Rachel decide when to flush — make it her special job. Let her cover her ears if she wants to. Control over the flush almost always solves the fear.</div>
+      </div>
+      <div class="tip-card tip-orange">
+        <span class="tip-icon">💡</span>
+        <div class="tip-title">Lighting</div>
+        <div class="tip-body">Harsh fluorescent lights bother many sensory-sensitive kids. Use a warm lamp or nightlight. Soft, warm-toned light = calmer bathroom experience.</div>
+      </div>
+      <div class="tip-card tip-yellow">
+        <span class="tip-icon">🎵</span>
+        <div class="tip-title">Sound</div>
+        <div class="tip-body">Put on Rachel's favorite songs or a short fun video while she sits. A special book that only comes out in the bathroom works great too — fun = longer sits = more success.</div>
+      </div>
+      <div class="tip-card tip-green">
+        <span class="tip-icon">🌡️</span>
+        <div class="tip-title">Temperature</div>
+        <div class="tip-body">Cold toilet seats cause sensory shock. Use a padded seat cover. Warm the bathroom in winter. Remove sensory friction wherever you can.</div>
+      </div>
+      <div class="tip-card">
+        <span class="tip-icon">🎨</span>
+        <div class="tip-title">Personalize It</div>
+        <div class="tip-body">Let Rachel pick stickers to decorate the potty or bathroom wall. Her favorite character on the toilet seat = instant buy-in. Ownership and excitement go hand in hand.</div>
+      </div>
+      <div class="tip-card tip-blue">
+        <span class="tip-icon">🧸</span>
+        <div class="tip-title">Comfort Kit</div>
+        <div class="tip-body">Keep a small basket near the toilet: favorite fidget toy, a book, a small tablet for videos. Reserved only for potty time — makes it special.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">💊 Medical Considerations</div>
+  <div class="card card-yellow">
+    <div class="card-title">Check These With Rachel's Pediatrician</div>
+    <ul class="checklist">
+      <li><span>⚠️</span><span>Constipation can stall bowel training completely — if Rachel is straining, withholding, or has hard stools, talk to her pediatrician before pushing forward</span></li>
+      <li><span>⚠️</span><span>GI issues like pain or discomfort during elimination can look like resistance — rule out medical causes first</span></li>
+      <li><span>⚠️</span><span>If Rachel is withholding poop, keep the bathroom low-pressure and consult the pediatrician — don't push through bowel withholding</span></li>
+      <li><span>💊</span><span>Miralax/fiber supplements (with MD guidance) can make bowel training significantly easier</span></li>
+      <li><span>🩺</span><span>No progress after 4–6 weeks of genuine consistency is a signal to call Rachel's pediatrician and rule out physical factors</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══════════════ 6-WEEK PLAN ═══════════════ -->
+<div class="screen" id="screen-plan">
+  <div class="hero" style="background:linear-gradient(135deg,var(--green-dark) 0%,var(--blue) 100%);">
+    <div class="hero-emojis">🗓️ 💪 🎯</div>
+    <h1>The 6-Week Plan</h1>
+    <p>Evidence-based phased approach for neurotypical toddlers &bull; Child-led with structured support</p>
+  </div>
+
+  <div class="info-box success">
+    <strong>The research says:</strong> For neurotypical 3-year-olds, the two most effective methods are the Child-Oriented approach (gradual, child-led) and the Azrin &amp; Foxx intensive method (3–7 day focus period). Both work — pick based on your style. Either way, scheduled sits after meals and on wake-up are the backbone of success. (AAP, Psychology Today 2022)
+  </div>
+
+  <div class="week-nav">
+    <button onclick="changeWeek(-1)">← Prev</button>
+    <span class="week-label" id="weekLabel">Overview</span>
+    <button onclick="changeWeek(1)">Next →</button>
+  </div>
+
+  <div id="planContent">
+    <!-- Populated by JS -->
+  </div>
+
+  <div class="section-label">📊 Full Timeline</div>
+  <div class="timeline">
+    <div class="phase-item">
+      <div class="phase-week">Weeks 1-2 · Foundation</div>
+      <div class="phase-title">🏗️ Build the Habit — Every 10-15 Minutes</div>
+      <div class="phase-body">
+        <ul>
+          <li>Switch to real underwear on Day 1. No exceptions during waking hours.</li>
+          <li>Set a timer for every 20-30 minutes. Prompt Rachel to the bathroom on each alarm.</li>
+          <li>Use a consistent, cheerful verbal cue: "Let's go try the potty!" Keep it positive, not a question.</li>
+          <li>Target sit time: 2-3 minutes. Never force longer — keep it positive.</li>
+          <li>Increase fluids significantly on training days (juice, water, milk)</li>
+          <li>Log every void, accident, and close call. Track when accidents happen most.</li>
+          <li>Immediate reward for ANY sit attempt + BIGGER reward for any success</li>
+          <li>Let Rachel decide when to flush — make it her special job, not something that happens to her</li>
+          <li>Expect many accidents. That is normal and expected at this stage.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="phase-item phase-2">
+      <div class="phase-week">Weeks 3-4 · Pattern Recognition</div>
+      <div class="phase-title">🔍 Use Data to Schedule Smarter</div>
+      <div class="phase-body">
+        <ul>
+          <li>Review your accident log. Look for patterns — when does Rachel usually go?</li>
+          <li>Extend timer intervals to 20-30 minutes based on what data shows</li>
+          <li>Continue rewarding every success immediately and consistently</li>
+          <li>Look for Rachel's natural patterns — most kids go within 20 min of waking and 15 min after meals</li>
+          <li>Begin teaching hand-wash routine as part of the chain</li>
+          <li>Success rate should be climbing. Even 30-40% success is great progress.</li>
+          <li>Coordinate with daycare or preschool — share your schedule so they can keep it consistent</li>
+          <li>Celebrate loudly and enthusiastically — victory dances, stickers, preferred treats</li>
+        </ul>
+      </div>
+    </div>
+    <div class="phase-item phase-3">
+      <div class="phase-week">Weeks 5-6 · Independence Building</div>
+      <div class="phase-title">🌱 Extending Intervals + Reducing Prompts</div>
+      <div class="phase-body">
+        <ul>
+          <li>Extend intervals to 30-45 minutes if success rate is consistent</li>
+          <li>Begin fading prompts — verbal cue only, then wait for Rachel to initiate on her own</li>
+          <li>Encourage Rachel to say "I need to go" or use her own words — reinforce any self-initiation attempt</li>
+          <li>Watch for Rachel's physical cues — crossing legs, holding herself, getting fidgety — prompt immediately</li>
+          <li>Shift reward to bigger milestones (token economy: 3 stars = special reward)</li>
+          <li>Nighttime/nap training is secondary — focus on daytime mastery first</li>
+          <li>If progress has stalled despite consistent effort, check in with Rachel's pediatrician</li>
+          <li>Regression is normal after illness or stress — restart with shorter intervals</li>
+        </ul>
+      </div>
+    </div>
+    <div class="phase-item phase-4">
+      <div class="phase-week">Weeks 7-12 · Maintenance (if needed)</div>
+      <div class="phase-title">🏁 Consolidation and Generalization</div>
+      <div class="phase-body">
+        <ul>
+          <li>Practice in different bathrooms — grocery stores, Grandma's, preschool, friends' houses</li>
+          <li>Generalization is its own skill set — don't assume home training transfers automatically</li>
+          <li>A consistent "potty before we leave the house" rule helps generalization a lot</li>
+          <li>60-70% daytime success without prompting = significant milestone</li>
+          <li>Nighttime training: limit fluids 1 hour before bed, wake for one mid-night potty trip</li>
+          <li>Track bowel movements separately — bowel training often takes 2-4 weeks longer than urine</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">🕒 Sample Daily Schedule</div>
+  <div class="card card-green">
+    <div class="card-title">Sample Training Day (Weeks 1-2)</div>
+    <table class="log-table" style="width:100%;">
+      <thead><tr><th>Time</th><th>Action</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>7:00 AM</td><td>🌅 Wake up → Potty immediately</td><td>First void of day — highest success rate</td></tr>
+        <tr><td>7:15 AM</td><td>🥛 Fluids with breakfast</td><td>Extra juice or milk = more practice opportunities</td></tr>
+        <tr><td>7:30 AM</td><td>⏱️ Timer starts — every 20-30 min</td><td>Begin timed bathroom visits</td></tr>
+        <tr><td>Every 20-30 min</td><td>🚽 Prompt to bathroom</td><td>Say "Let's try the potty!" cheerfully — not a question</td></tr>
+        <tr><td>After meals</td><td>🍽️ Always potty 15 min post-meal</td><td>Gastrocolic reflex — high-probability void window</td></tr>
+        <tr><td>12:00 PM</td><td>💧 Lunch + more fluids</td><td>Keep hydration up all day</td></tr>
+        <tr><td>1:00 PM</td><td>😴 Nap — diaper/pull-up OK</td><td>Focus on waking hours for now</td></tr>
+        <tr><td>2:00 PM</td><td>⏱️ Resume timer on wake</td><td>Potty immediately after nap</td></tr>
+        <tr><td>5:30 PM</td><td>🍽️ Dinner → potty 15 min after</td><td>Post-dinner window is reliable</td></tr>
+        <tr><td>7:30 PM</td><td>🛁 Bath → potty before bed</td><td>End the day with a win</td></tr>
+        <tr><td>Bedtime</td><td>🌙 Diaper OK overnight</td><td>Nighttime training comes later</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════ TIMER ═══════════════ -->
+<div class="screen" id="screen-timer">
+  <div class="hero" style="background:linear-gradient(135deg,var(--blue) 0%,#c0d8ff 100%);color:#1a3a7a;">
+    <div class="hero-emojis">⏱️ 🔔</div>
+    <h1 style="color:#1a3a7a;">Potty Timer</h1>
+    <p style="color:#2a5a9a;">Consistent timing is the #1 driver of early success</p>
+  </div>
+
+  <div class="timer-display" id="timerDisplay">
+    <div class="timer-label" id="timerPhaseLabel">Select an interval below to start</div>
+    <div class="timer-clock" id="timerClock">--:--</div>
+    <div class="timer-phase" id="timerSubLabel">Timer not running</div>
+    <div class="timer-btns">
+      <button class="t-btn primary" id="timerStartBtn" onclick="startTimer()">▶ Start</button>
+      <button class="t-btn" onclick="pauseTimer()" id="timerPauseBtn" disabled>⏸ Pause</button>
+      <button class="t-btn danger" onclick="resetTimer()" id="timerResetBtn">↺ Reset</button>
+    </div>
+  </div>
+
+  <div class="card card-blue">
+    <div class="card-title">⏱️ Choose Your Interval</div>
+    <div class="interval-picker" id="intervalPicker">
+      <div class="interval-option" onclick="selectInterval(10, this)">
+        <span class="interval-min">10</span>
+        <span class="interval-lbl">min · 3-Day Blitz<br>(Start week)</span>
+      </div>
+      <div class="interval-option selected" onclick="selectInterval(15, this)">
+        <span class="interval-min">15</span>
+        <span class="interval-lbl">min · Standard<br>(Weeks 1-2)</span>
+      </div>
+      <div class="interval-option" onclick="selectInterval(20, this)">
+        <span class="interval-min">20</span>
+        <span class="interval-lbl">min · Building<br>(Week 2-3)</span>
+      </div>
+      <div class="interval-option" onclick="selectInterval(30, this)">
+        <span class="interval-min">30</span>
+        <span class="interval-lbl">min · Progress<br>(Weeks 3-4)</span>
+      </div>
+      <div class="interval-option" onclick="selectInterval(45, this)">
+        <span class="interval-min">45</span>
+        <span class="interval-lbl">min · Advanced<br>(Weeks 5-6)</span>
+      </div>
+      <div class="interval-option" onclick="selectInterval(60, this)">
+        <span class="interval-min">60</span>
+        <span class="interval-lbl">min · Independent</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-pink">
+    <div class="card-title">🔔 What to Do When Timer Goes Off</div>
+    <ol class="steps-chain" id="timerSteps">
+      <li class="step-item">
+        <div class="step-num" onclick="toggleStep(this)">1</div>
+        <div class="step-content">
+          <div class="step-name">Give a cheerful prompt</div>
+          <div class="step-hint">Say "Let's try the potty!" with a smile — make it an adventure, not a command</div>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num" onclick="toggleStep(this)">2</div>
+        <div class="step-content">
+          <div class="step-name">Walk to the bathroom together</div>
+          <div class="step-hint">Make it a routine, not a negotiation. "Time to go try!" then head there — don't ask, just go</div>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num" onclick="toggleStep(this)">3</div>
+        <div class="step-content">
+          <div class="step-name">Pants down and sit</div>
+          <div class="step-hint">Help her get settled. Give her a book or small toy if she needs it to sit still for 2-3 minutes</div>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num" onclick="toggleStep(this)">4</div>
+        <div class="step-content">
+          <div class="step-name">Wait comfortably for 2-3 minutes</div>
+          <div class="step-hint">Stay nearby but give her space. No pressure — just wait and see if anything happens</div>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num" onclick="toggleStep(this)">5</div>
+        <div class="step-content">
+          <div class="step-name">SUCCESS → Celebrate immediately!</div>
+          <div class="step-hint">Big hugs, happy voice, sticker on the chart right now! Log it and let her pick her reward!</div>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num" onclick="toggleStep(this)">6</div>
+        <div class="step-content">
+          <div class="step-name">No success → That's OK, try again soon!</div>
+          <div class="step-hint">"Good trying! We'll try again soon." Cheerful and light — never frustrated. Restart the timer.</div>
+        </div>
+      </li>
+    </ol>
+  </div>
+
+  <div class="card card-yellow">
+    <div class="card-title">💧 Fluid Intake Today</div>
+    <p style="font-size:0.85rem;color:var(--text-mid);margin-bottom:10px;">More fluids = more practice opportunities. Tap a cup to track!</p>
+    <div class="fluid-icons" id="fluidCups">
+      <!-- Populated by JS -->
+    </div>
+    <p id="fluidCount" style="font-size:0.85rem;font-weight:700;margin-top:10px;color:var(--text-mid);">0 of 8 servings today</p>
+  </div>
+</div>
+
+<!-- ═══════════════ TRACKER ═══════════════ -->
+<div class="screen tab-tracker" id="screen-tracker">
+  <div class="hero" style="background:linear-gradient(135deg,var(--orange) 0%,var(--pink) 100%);">
+    <div class="hero-emojis">📊 📈</div>
+    <h1>Progress Tracker</h1>
+    <p>Data drives decisions — log everything, find the patterns</p>
+  </div>
+
+  <div class="card card-orange">
+    <div class="card-title">📝 Log a Visit</div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px;">
+      <select id="logTimeInput" style="flex:1;min-width:120px;">
+        <!-- Populated by JS -->
+      </select>
+      <select id="logTypeInput">
+        <option value="success">🎉 Success!</option>
+        <option value="close">🙌 Close Call</option>
+        <option value="accident">💧 Accident</option>
+        <option value="dry">✅ Stayed Dry</option>
+      </select>
+      <input type="text" id="logNoteInput" placeholder="Notes (optional)" style="flex:2;min-width:140px;">
+      <button class="btn btn-pink" onclick="addLogEntry()">+ Log It</button>
+    </div>
+  </div>
+
+  <div class="section-label">📅 This Week's Grid</div>
+  <div class="card">
+    <div class="tracker-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Success</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ffe0e0"></div>Accident</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--yellow)"></div>Close Call</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Dry Check</div>
+    </div>
+    <div class="tracker-grid" id="trackerGrid">
+      <!-- Populated by JS -->
+    </div>
+    <button class="btn btn-outline btn-sm" style="margin-top:12px;" onclick="clearGrid()">Clear Today's Grid</button>
+  </div>
+
+  <div class="section-label">📋 Log History</div>
+  <div class="card">
+    <div style="overflow-x:auto;">
+      <table class="log-table" id="logTable">
+        <thead><tr><th>Time</th><th>Type</th><th>Notes</th><th></th></tr></thead>
+        <tbody id="logTableBody">
+          <tr><td colspan="4" style="text-align:center;color:var(--text-mid);padding:20px;">No entries yet! Use the log form above.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <button class="btn btn-outline btn-sm" style="margin-top:12px;" onclick="exportLog()">⬇ Export Log (Text)</button>
+  </div>
+
+  <div class="section-label">📈 Pattern Analysis</div>
+  <div class="card card-blue">
+    <div class="card-title">Accident Pattern Insights</div>
+    <div id="patternInsights" style="font-size:0.9rem;color:var(--text-mid);">Log at least 5 entries to see pattern insights here.</div>
+  </div>
+</div>
+
+<!-- ═══════════════ VISUAL STEPS ═══════════════ -->
+<div class="screen" id="screen-visual">
+  <div class="hero" style="background:linear-gradient(135deg,var(--yellow) 0%,var(--green) 100%);color:var(--text-dark);">
+    <div class="hero-emojis">🖼️ 👆</div>
+    <h1 style="color:var(--text-dark);">Visual Steps</h1>
+    <p style="color:var(--text-mid);">Task analysis: the potty routine broken into every step</p>
+  </div>
+
+  <div class="info-box">
+    <strong>Why this works:</strong> Toddlers learn through repetition and routine. Breaking the potty trip into clear, predictable steps helps Rachel know exactly what to expect every time — no surprises. Tap each step as she completes it!
+  </div>
+
+  <div class="card card-green">
+    <div class="card-title">🚽 Potty Routine — Tap Each Step!</div>
+    <div class="visual-schedule" id="visualSchedule">
+      <div class="vs-step" onclick="toggleVsStep(this)">
+        <span class="vs-icon">🚶</span>
+        <span class="vs-label">Walk to Bathroom</span>
+      </div>
+      <div class="vs-step" onclick="toggleVsStep(this)">
+        <span class="vs-icon">💡</span>
+        <span class="vs-label">Light On</span>
+      </div>
+      <div class="vs-step" onclick="toggleVsStep(this)">
+        <span class="vs-icon">👇</span>
+        <span class="vs-label">Pants Down</span>
+      </div>
+      <div class="vs-step" onclick="toggleVsStep(this)">
+        <span class="vs-icon">🪑</span>
+        <span class="vs-label">Sit on Potty</span>
+      </div>
+      <div class="vs-step" onclick="toggleVsStep(this)">
+        <span class="vs-icon">⏳</span>
+        <span class="vs-label">Wait & Try</span>
+      </div>
+      <div class="vs-step" onclick="toggleVsStep(this)">
+        <span class="vs-icon">🧻</span>
+        <span class="vs-label">Wipe</span>
+      </div>
+      <div class="vs-step" onclick="toggleVsStep(this)">
+        <span class="vs-icon">👆</span>
+        <span class="vs-label">Pants Up</span>
+      </div>
+      <div class="vs-step" onclick="toggleVsStep(this)">
+        <span class="vs-icon">🚽</span>
+        <span class="vs-label">Flush</span>
+      </div>
+      <div class="vs-step" onclick="toggleVsStep(this)">
+        <span class="vs-icon">🚿</span>
+        <span class="vs-label">Wash Hands</span>
+      </div>
+      <div class="vs-step" onclick="toggleVsStep(this)">
+        <span class="vs-icon">🎉</span>
+        <span class="vs-label">Celebrate!</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">
+      <button class="btn btn-green btn-sm" onclick="resetVsSteps()">↺ Reset Steps</button>
+      <button class="btn btn-pink btn-sm" onclick="completeAllVs()">✓ Complete All</button>
+    </div>
+  </div>
+
+  <div class="section-label">🖨️ Print Visual Cards</div>
+  <div class="card card-pink">
+    <div class="card-title">Visual Cards for the Bathroom Wall</div>
+    <div id="printCards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:12px;margin:14px 0;">
+    </div>
+    <button class="btn btn-pink" onclick="printCards()">🖨️ Print These Cards</button>
+    <p style="font-size:0.8rem;color:var(--text-mid);margin-top:10px;">Print, laminate, and hang near the toilet at Rachel's eye level. Let her point to each card herself as she goes through the steps — it builds independence and pride!</p>
+  </div>
+
+  <div class="section-label">📖 Social Story Script</div>
+  <div class="card card-blue">
+    <div class="card-title">Simple Social Story for Rachel</div>
+    <div style="background:#f0f5ff;border-radius:var(--radius-sm);padding:18px;font-size:0.92rem;line-height:1.8;color:var(--text-dark);">
+      <p>When I feel something in my tummy, it might be time to use the potty. 🚽</p>
+      <br>
+      <p>I walk to the bathroom with Mama or Daddy. I go inside and turn on the light.</p>
+      <br>
+      <p>I pull my pants and underwear down. I sit on the potty seat. I wait a little.</p>
+      <br>
+      <p>If pee or poop comes out, that is GREAT! Mama and Daddy are so proud of me!</p>
+      <br>
+      <p>I wipe from front to back. I pull my pants up. I flush the toilet. I wash my hands.</p>
+      <br>
+      <p>Then I get my sticker! I am such a big girl. I am learning every day. 🌟</p>
+    </div>
+    <button class="btn btn-outline btn-sm" style="margin-top:12px;" onclick="printStory()">🖨️ Print Story</button>
+  </div>
+</div>
+
+<!-- ═══════════════ CALM CORNER ═══════════════ -->
+<div class="screen tab-anxiety" id="screen-anxiety">
+  <div class="hero" style="background:linear-gradient(135deg,var(--blue) 0%,#d0e8ff 100%);color:#1a3a7a;">
+    <div class="hero-emojis">💙 🌊 🌿</div>
+    <h1 style="color:#1a3a7a;">Calm Corner</h1>
+    <p style="color:#2a5a9a;">When Rachel pushes back — and when YOU need a reset</p>
+  </div>
+
+  <div class="section-label">🧠 Why Rachel May Resist the Potty</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-bottom:20px;">
+    <div class="anxiety-card">
+      <div class="anxiety-icon">👑</div>
+      <div class="anxiety-title">Power Struggle</div>
+      <div class="anxiety-body">The #1 reason 3-year-olds resist potty training. She knows she has a choice. Turn it into her idea — let her pick the underwear, the potty seat, the sticker chart.</div>
+    </div>
+    <div class="anxiety-card">
+      <div class="anxiety-icon">🕳️</div>
+      <div class="anxiety-title">Fear of Falling In</div>
+      <div class="anxiety-body">The regular toilet seat is genuinely huge to a 3-year-old. A seat reducer + footstool almost always fixes this — she needs to feel stable and in control.</div>
+    </div>
+    <div class="anxiety-card">
+      <div class="anxiety-icon">💩</div>
+      <div class="anxiety-title">Poop Anxiety</div>
+      <div class="anxiety-body">Very common — many kids who pee on the potty will still withhold poop. Don't force it. Normalize it, make the bathroom comfortable, and it usually follows on its own timeline.</div>
+    </div>
+    <div class="anxiety-card">
+      <div class="anxiety-icon">🔊</div>
+      <div class="anxiety-title">Flush Fear</div>
+      <div class="anxiety-body">The loud, sudden flush startles toddlers. Let Rachel decide when and whether to flush. Make it her "big girl job" — control over the flush usually fixes the fear.</div>
+    </div>
+    <div class="anxiety-card">
+      <div class="anxiety-icon">🎮</div>
+      <div class="anxiety-title">FOMO</div>
+      <div class="anxiety-body">"I don't wanna stop playing!" is real. Make a bathroom trip feel special, not disruptive. A favorite book that only appears during potty time can flip this completely.</div>
+    </div>
+    <div class="anxiety-card">
+      <div class="anxiety-icon">🔄</div>
+      <div class="anxiety-title">Regression</div>
+      <div class="anxiety-body">New sibling, starting preschool, travel, stress — any big change can cause a temporary regression. It's normal. Stay calm, back up to basics, and it passes.</div>
+    </div>
+  </div>
+
+  <div class="section-label">🎯 Desensitization Steps</div>
+  <div class="card card-blue">
+    <div class="card-title">When Rachel Pushes Back — Take It Slower</div>
+    <div class="timeline" style="margin-left:0;padding-left:28px;">
+      <div class="phase-item" style="margin-left:0;">
+        <div class="phase-week">Phase 1 · Days 1-3</div>
+        <div class="phase-title">Make the Bathroom Fun — No Pressure</div>
+        <div class="phase-body">Read her potty books. Watch YouTube potty training videos together. Let her sit on the closed toilet with you for story time. No expectation to actually go. Just: bathroom = fun, safe, interesting place.</div>
+      </div>
+      <div class="phase-item phase-2" style="margin-left:0;">
+        <div class="phase-week">Phase 2 · Days 4-6</div>
+        <div class="phase-title">Sit on Potty (Clothed First)</div>
+        <div class="phase-body">Have Rachel sit on the potty or toilet with clothes on. Big celebration for sitting. No pants-down yet. Let her practice flushing from a safe distance. She's in charge of the flush.</div>
+      </div>
+      <div class="phase-item phase-3" style="margin-left:0;">
+        <div class="phase-week">Phase 3 · Day 7+</div>
+        <div class="phase-title">Pants Down — Let Her Lead</div>
+        <div class="phase-body">Try pants-down sitting. Keep it short at first. Celebrate every attempt. Let her decorate her chart, pick her sticker, choose her potty book. The more ownership she has, the less she pushes back.</div>
+      </div>
+      <div class="phase-item phase-4" style="margin-left:0;">
+        <div class="phase-week">Phase 4 · Ongoing</div>
+        <div class="phase-title">If It Becomes a Power Struggle — Ease Off</div>
+        <div class="phase-body">The AAP says if training becomes a power struggle, pause for 1-2 weeks. A 3-year-old who 'wins' the potty battle will hold out far longer than one who thinks the potty is HER idea. Take a break, come back enthusiastically, and let her feel in control.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">🌬️ Breathing Exercise (For You!)</div>
+  <div class="card card-blue">
+    <div class="card-title">Parent Reset — 4-7-8 Breathing</div>
+    <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:6px;">Potty training is genuinely exhausting. Your calm is Rachel's calm. Use this when the fourth accident of the day has your jaw tight.</p>
+    <div class="breathe-circle" id="breatheCircle" onclick="startBreathing()">Tap to<br>breathe</div>
+    <p id="breatheInstructions" style="text-align:center;font-size:0.88rem;color:var(--text-mid);">Click the circle to start a calming breath cycle</p>
+    <p style="text-align:center;font-size:0.78rem;color:var(--text-mid);margin-top:8px;">4 counts in → 7 hold → 8 out. Research-backed anxiety reduction.</p>
+  </div>
+
+  <div class="section-label">💬 Calm Phrases to Use</div>
+  <div class="card card-pink">
+    <div class="card-title">Evidence-Based Language for Potty Training</div>
+    <div class="tips-grid" style="grid-template-columns:1fr 1fr;">
+      <div style="padding:14px;background:#fff5f9;border-radius:var(--radius-sm);border-left:4px solid var(--green-dark);">
+        <div style="font-weight:700;color:var(--green-dark);margin-bottom:8px;">✅ SAY THIS</div>
+        <ul style="list-style:none;font-size:0.85rem;line-height:1.9;">
+          <li>"Let's try the potty!"</li>
+          <li>"Good trying — you sat so well!"</li>
+          <li>"Yay! You did it! Sticker time!"</li>
+          <li>"We'll try again soon."</li>
+          <li>"Oops, accident. No big deal — let's change."</li>
+          <li>"You're such a big girl for trying!"</li>
+        </ul>
+      </div>
+      <div style="padding:14px;background:#fff0f0;border-radius:var(--radius-sm);border-left:4px solid #ff6666;">
+        <div style="font-weight:700;color:#cc2222;margin-bottom:8px;">❌ AVOID THIS</div>
+        <ul style="list-style:none;font-size:0.85rem;line-height:1.9;">
+          <li>"Do you need to go?" (easy to say no)</li>
+          <li>"Why didn't you tell me?"</li>
+          <li>"That's so gross."</li>
+          <li>"Big girls don't do that."</li>
+          <li>"I'm so disappointed."</li>
+          <li>"You're not getting your sticker." (after an accident)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">💪 Caregiver Mental Health Reminders</div>
+  <div class="card card-yellow">
+    <ul class="checklist">
+      <li><span>💛</span><span>Accidents are not failure. They're information. Every accident tells you something about timing, triggers, or readiness.</span></li>
+      <li><span>💛</span><span>Progress is rarely linear. Three great days followed by a rough day is completely normal — it doesn't erase the progress.</span></li>
+      <li><span>💛</span><span>23% of neurotypical kids resist training too. Resistance doesn't mean failure — it often just means timing or approach needs a small tweak.</span></li>
+      <li><span>💛</span><span>Consistency + low stress + cheerful attitude = the actual formula. Your energy matters more than the method you choose.</span></li>
+      <li><span>💛</span><span>Take breaks. Tag your partner in. Potty training is a team sport and one person wearing down doesn't help anyone.</span></li>
+      <li><span>💛</span><span>You are a great parent. This work you're doing — the patience, the consistency, the cheerleading — it matters enormously for Rachel's confidence and independence.</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══════════════ REWARDS ═══════════════ -->
+<div class="screen tab-rewards" id="screen-rewards">
+  <div class="hero" style="background:linear-gradient(135deg,var(--pink) 0%,var(--orange) 100%);">
+    <div class="hero-emojis">⭐ 🎁 🏆</div>
+    <h1>Star Board & Rewards</h1>
+    <p>Immediate reinforcement is the #1 driver of success</p>
+  </div>
+
+  <div class="info-box success">
+    <strong>Key rule:</strong> Praise effort AND success. For Rachel, combine immediate praise with a sticker or small treat she loves. Reserve the special reward for potty wins to keep it exciting.
+  </div>
+
+  <div class="section-label">⭐ Rachel's Star Board</div>
+  <div class="card card-pink">
+    <div class="card-title">Stars Earned <span id="starCount" style="font-family:'Handlee';font-size:1.6rem;color:var(--pink);">0 ⭐</span></div>
+    <div class="star-board" id="starBoard">
+      <!-- Populated by JS -->
+    </div>
+    <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+      <button class="btn btn-pink" onclick="addStar()">+ Add a Star</button>
+      <button class="btn btn-outline btn-sm" onclick="clearStars()">Clear All Stars</button>
+    </div>
+  </div>
+
+  <div class="section-label">🎁 Reward Menu</div>
+  <div class="card card-orange">
+    <div class="card-title">Customize Rachel's Reward Levels</div>
+    <div id="rewardsList">
+      <div class="reward-row">
+        <div class="reward-emoji">🍬</div>
+        <div class="reward-info">
+          <div class="reward-name">Immediate Treat (1 star)</div>
+          <div class="reward-stars">1 piece of preferred food/candy — given within 3 seconds of success</div>
+        </div>
+      </div>
+      <div class="reward-row">
+        <div class="reward-emoji">📱</div>
+        <div class="reward-info">
+          <div class="reward-name">5 Minutes Screen Time (3 stars)</div>
+          <div class="reward-stars">3 ⭐ needed · Reserved tablet/video time</div>
+        </div>
+      </div>
+      <div class="reward-row">
+        <div class="reward-emoji">💃</div>
+        <div class="reward-info">
+          <div class="reward-name">Dance Party or Special Activity (5 stars)</div>
+          <div class="reward-stars">5 ⭐ needed · A special activity she loves, reserved for potty milestones</div>
+        </div>
+      </div>
+      <div class="reward-row">
+        <div class="reward-emoji">🌟</div>
+        <div class="reward-info">
+          <div class="reward-name">Big Celebration (10 stars)</div>
+          <div class="reward-stars">10 ⭐ needed · Special outing, big favorite activity, or a new preferred item</div>
+        </div>
+      </div>
+      <div class="reward-row">
+        <div class="reward-emoji">🏆</div>
+        <div class="reward-info">
+          <div class="reward-name">Week of Successes (20 stars)</div>
+          <div class="reward-stars">20 ⭐ needed · The biggest reward you can think of. Rachel's absolute favorite thing.</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:14px;padding:14px;background:#fff8f0;border-radius:var(--radius-sm);">
+      <strong style="font-family:'Handlee';font-size:1rem;">Add Custom Reward</strong>
+      <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;">
+        <input type="text" id="rewardEmoji" placeholder="🎮 emoji" style="width:70px;">
+        <input type="text" id="rewardName" placeholder="Reward name" style="flex:1;min-width:140px;">
+        <input type="text" id="rewardThreshold" placeholder="Stars needed" style="width:100px;">
+        <button class="btn btn-orange btn-sm" style="background:var(--orange);color:white;border:none;" onclick="addCustomReward()">+ Add</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">🧠 Reinforcement Science</div>
+  <div class="card card-blue">
+    <div class="card-title">What the Research Says About Rewards</div>
+    <ul class="checklist" style="font-size:0.9rem;">
+      <li><span>⚡</span><span><strong>Praise immediately.</strong> A 3-year-old makes the connection when celebration happens right away. Big hugs, happy voices, and a sticker on the chart the moment she succeeds.</span></li>
+      <li><span>🎯</span><span><strong>Find what she loves most.</strong> Sticker charts work well for most 3-year-olds — but it might also be a special song, a call to Grandma, or a dance party. Whatever makes her light up.</span></li>
+      <li><span>📈</span><span><strong>More fluids = more practice.</strong> On intensive days, offer extra juice, water, or milk. More voids = more chances to succeed and celebrate.</span></li>
+      <li><span>🔄</span><span><strong>Reward every attempt early on.</strong> Even sitting without going earns a sticker at first. As she gets more consistent, shift to rewarding only actual success.</span></li>
+      <li><span>🔁</span><span><strong>Keep it fresh.</strong> Rotate between 2-3 different sticker types or small rewards so it doesn't get boring. Novelty keeps 3-year-olds engaged.</span></li>
+      <li><span>📉</span><span><strong>Fade gradually toward praise alone.</strong> Once Rachel is consistently successful, slowly phase out tangible rewards and shift to verbal praise and big hugs. Don't cut off rewards abruptly.</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══════════════ TIPS & SCIENCE ═══════════════ -->
+<div class="screen tab-tips" id="screen-tips">
+  <div class="hero" style="background:linear-gradient(135deg,var(--green-dark) 0%,var(--yellow) 100%);color:var(--text-dark);">
+    <div class="hero-emojis">💡 🔬 📚</div>
+    <h1 style="color:var(--text-dark);">Tips & Science</h1>
+    <p style="color:var(--text-mid);">Research-backed strategies for neurotypical 3-year-old girls</p>
+  </div>
+
+  <div class="section-label">🔬 The Big Findings</div>
+  <div class="tips-grid">
+    <div class="tip-card">
+      <span class="tip-icon">👖</span>
+      <div class="tip-title">Underwear, Not Pull-Ups</div>
+      <div class="tip-body">Research supports switching to real underwear during waking training hours. Pull-ups wick moisture so well that kids can't feel when they're wet — removing the key sensory signal that drives learning. Let Rachel pick fun printed underwear to create buy-in. (AAP)</div>
+    </div>
+    <div class="tip-card tip-orange">
+      <span class="tip-icon">⏱️</span>
+      <div class="tip-title">Scheduled Sits Work Best</div>
+      <div class="tip-body">Timed sits after waking and meals dramatically reduce accidents. Most 3-year-olds go within 20 minutes of waking and 15 minutes post-meal. Building those sits into the routine removes the pressure of "remembering" to go. (Mayo Clinic, 2024)</div>
+    </div>
+    <div class="tip-card tip-yellow">
+      <span class="tip-icon">💧</span>
+      <div class="tip-title">Increase Fluids on Training Days</div>
+      <div class="tip-body">More fluids = more practice opportunities. Track void times for a few days before starting to find Rachel's natural patterns. Most kids have predictable windows — knowing them lets you time sits for maximum success. (Parentingscience.com, 2024)</div>
+    </div>
+    <div class="tip-card tip-green">
+      <span class="tip-icon">🖼️</span>
+      <div class="tip-title">Let Her Lead With Ownership</div>
+      <div class="tip-body">Research supports the child-oriented approach for neurotypical kids — giving Rachel choices (which underwear, which sticker, when to flush) creates buy-in and reduces power struggles. The more it feels like HER decision, the less she fights it. (Brazelton Child-Oriented Method, Psychology Today 2022)</div>
+    </div>
+    <div class="tip-card tip-blue">
+      <span class="tip-icon">🔗</span>
+      <div class="tip-title">Routine and Repetition</div>
+      <div class="tip-body">Toddlers thrive on predictable sequences. Walk through the same steps every time: prompt, walk together, pants down, sit, try, wipe front-to-back, flush, wash hands, celebrate. Consistent repetition builds the habit faster than any method. (Mayo Clinic, 2024)</div>
+    </div>
+    <div class="tip-card">
+      <span class="tip-icon">🔄</span>
+      <div class="tip-title">Accident Protocol Matters</div>
+      <div class="tip-body">Never punish or shame accidents. A calm, matter-of-fact "oops, that's okay — pee goes in the potty" and a quick change is all you need. Shame and frustration create anxiety that slows training. (Pampers, Healthychildren.org, AAP)</div>
+    </div>
+    <div class="tip-card tip-orange">
+      <span class="tip-icon">🏫</span>
+      <div class="tip-title">Consistency Across Settings</div>
+      <div class="tip-body">Coordinate with preschool or daycare so they're using the same approach. Establish a "potty before we leave the house" rule early — it becomes automatic. Home success does help, but different bathrooms still need a little practice. (Pampers, 2026)</div>
+    </div>
+    <div class="tip-card tip-yellow">
+      <span class="tip-icon">💩</span>
+      <div class="tip-title">Poop Training Often Takes Longer</div>
+      <div class="tip-body">Most kids master pee training before poop — sometimes by weeks. This is completely normal. Don't push poop on the potty while pee training is still new. Poop anxiety (withholding) is very common in 3-year-olds — keep the bathroom low-pressure and it usually follows. (Parentingscience.com, 2024)</div>
+    </div>
+  </div>
+
+  <div class="section-label">❓ Common Questions</div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      What if Rachel completely refuses to sit on the potty?
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      Don't force it — that guarantees a power struggle you will lose. Back up completely: no potty expectations for a few days. Read potty books together, let her sit on it fully clothed with zero pressure. The bathroom must feel like a safe, non-coercive space before training can move forward. If she's been resistant for more than 2 weeks consistently, the AAP recommends taking a full break for 1-2 weeks and restarting with a fresh, positive attitude.
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      How do we handle training at preschool or daycare?
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      Let the teachers know you're actively training so they can use the same approach. Most preschools are experienced with this — they'll do scheduled bathroom trips. Send extra change of clothes (3 pairs minimum) in her bag. Ask them to use the same cheerful, low-pressure language and to let Rachel put her sticker on when she gets home. Consistency between home and school significantly speeds mastery.
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      Should we use a small potty chair or the big toilet?
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      Either works — pick based on what Rachel is less intimidated by. A standalone potty chair is less scary and gives her full control, but you'll need to re-teach on the big toilet later. A toilet seat reducer with footstool generalizes better since it's what she'll use everywhere else. If she's scared of the big toilet, start with the small potty. Once she's trained, the transition to the regular toilet is usually quick.
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      What if we see no progress after 2-3 weeks of consistent effort?
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      First, rule out medical issues — constipation or a UTI can completely stall progress and look like behavioral resistance. Second, ask honestly: Is this a power struggle? If so, the AAP says take a full break for 2+ weeks and restart when the tension has reset. Third, check: is the reward actually motivating to HER? Is the approach cheerful enough? Zero progress after 3-4 weeks of genuine consistency is a signal to call the pediatrician and get a second opinion.
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      How do we handle nighttime and nap training?
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      Daytime and nighttime dryness are separate developmental milestones. Most 3-year-olds master daytime dryness first — nighttime can take months to years longer and is largely driven by biology (the antidiuretic hormone that reduces overnight urine production). Focus 100% on daytime first. Use a pull-up or training pants at night without shame. Once Rachel is consistently waking dry after naps, you can start working toward overnight dryness.
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      What about the "Oh Crap" 3-day method — does it work?
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      Yes — the Oh Crap method (Jamie Glowacki) is one of the most popular approaches for neurotypical toddlers and many families swear by it. The core is: naked/bottomless at home for the first phase, then commando (no underwear, just pants), then underwear. You watch closely, catch the starts, and guide her to the potty. The key is blocking off 3-4 days to fully commit. It requires presence and patience but can produce results very fast when a child is ready. It's essentially an intensive version of the schedule-based approach.
+    </div>
+  </div>
+
+  <div class="section-label">📚 Source References</div>
+  <div class="card card-blue" style="font-size:0.82rem;color:var(--text-mid);line-height:1.9;">
+    <ul style="list-style:none;padding:0;">
+      <li>• American Academy of Pediatrics (AAP): Toilet Training Guidelines</li>
+      <li>• Mayo Clinic: Potty Training — How to Get the Job Done (Updated November 2024)</li>
+      <li>• Pampers: Potty Training Girls — Your Essential Guide (2026)</li>
+      <li>• Psychology Today: An Evidence-Based Approach to Potty Training (2022)</li>
+      <li>• Parentingscience.com: Potty Training Problems and Solutions — Evidence-Based Guide (2024)</li>
+      <li>• The Bump: How and When to Start Potty Training (2025)</li>
+      <li>• HealthyChildren.org (AAP): Potty Training Regression</li>
+      <li>• Pampers: Potty Training Regression (2026)</li>
+      <li>• Glowacki, J.: Oh Crap! Potty Training (book, widely recommended by pediatricians)</li>
+      <li>• Brazelton TB: Child-Oriented Approach to Toilet Training (1962, foundational research)</li>
+      <li>• Schum et al (2002): Bladder and bowel development in young children</li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- CELEBRATION MODAL -->
+<div class="modal-overlay" id="celebrationModal">
+  <div class="modal" style="text-align:center;">
+    <div style="font-size:4rem;margin-bottom:12px;" id="celebEmoji">🎉</div>
+    <h2 id="celebTitle">Amazing!</h2>
+    <p id="celebMsg" style="color:var(--text-mid);margin:10px 0 20px;"></p>
+    <button class="btn btn-pink" onclick="closeModal()">Awesome! ⭐</button>
+  </div>
+</div>
+
+<!-- NOTIFICATION -->
+<div class="notif" id="notification" style="display:none;">
+  <span id="notifEmoji">🎉</span>
+  <span id="notifMsg">Logged!</span>
+</div>
+
+
+
+<div class="confetti-container" id="confetti"></div>
+
+<script>
+// ─── STATE ───
+// All data is stored in localStorage on this device only.
+const state = {
+  readinessChecked: 0,
+  totalChecks: 10,
+  stars: parseInt(localStorage.getItem('rc_stars') || '0'),
+  successes: parseInt(localStorage.getItem('rc_successes') || '0'),
+  accidents: parseInt(localStorage.getItem('rc_accidents') || '0'),
+  dryChecks: parseInt(localStorage.getItem('rc_dry') || '0'),
+  logEntries: JSON.parse(localStorage.getItem('rc_log') || '[]'),
+  fluidCount: parseInt(localStorage.getItem('rc_fluid') || '0'),
+  timerInterval: null,
+  timerSeconds: 0,
+  timerSelectedMinutes: 20,
+  timerRunning: false,
+  breathePhase: null,
+  breatheTimeout: null,
+  trainingStartDate: localStorage.getItem('rc_startDate') || null,
+  streakDays: parseInt(localStorage.getItem('rc_streak') || '0'),
+  lastLogDate: localStorage.getItem('rc_lastLogDate') || null
+};
+
+// ─── SAVE STATE TO LOCALSTORAGE ───
+function saveStats() {
+  localStorage.setItem('rc_stars', state.stars);
+  localStorage.setItem('rc_successes', state.successes);
+  localStorage.setItem('rc_accidents', state.accidents);
+  localStorage.setItem('rc_dry', state.dryChecks);
+  localStorage.setItem('rc_streak', state.streakDays);
+  localStorage.setItem('rc_lastLogDate', state.lastLogDate);
+  if (state.trainingStartDate) localStorage.setItem('rc_startDate', state.trainingStartDate);
+}
+
+// Alias so existing calls still work
+const pushStats = saveStats;
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  document.getElementById('tab-' + id).classList.add('active');
+  if (id === 'home') updateHomeStats();
+  if (id === 'tracker') renderTracker();
+}
+
+// ─── HOME STATS ───
+function updateHomeStats() {
+  document.getElementById('stat-successes').textContent = state.successes;
+  document.getElementById('stat-accidents').textContent = state.accidents;
+  document.getElementById('stat-stars').textContent = state.stars;
+  if (state.trainingStartDate) {
+    const days = Math.floor((Date.now() - new Date(state.trainingStartDate)) / 86400000) + 1;
+    document.getElementById('stat-days').textContent = days;
+  } else {
+    document.getElementById('stat-days').textContent = '0';
+  }
+  document.getElementById('stat-streak').textContent = state.streakDays;
+}
+
+// ─── CHECK BOXES ───
+function toggleCheck(el) {
+  el.classList.toggle('checked');
+  if (el.classList.contains('checked')) { el.textContent = '✓'; }
+  else { el.textContent = ''; }
+  const sibling = el.nextElementSibling;
+  if (sibling) sibling.classList.toggle('checked-text');
+  updateReadiness();
+}
+
+function updateReadiness() {
+  const checks = document.querySelectorAll('#readinessList .check-box.checked').length;
+  const total = document.querySelectorAll('#readinessList .check-box').length;
+  const pct = Math.round((checks / total) * 100);
+  document.getElementById('readPct').textContent = pct + '%';
+  document.getElementById('readFill').style.width = pct + '%';
+}
+
+// ─── QUICK LOG ───
+function quickLog(type) {
+  if (!state.trainingStartDate) {
+    state.trainingStartDate = new Date().toISOString();
+  }
+  const now = new Date();
+  const timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+  const entry = { id: Date.now(), time: timeStr, type, note: '', date: now.toDateString() };
+
+  if (type === 'success') {
+    state.successes++;
+    state.stars++;
+    celebrate();
+  } else if (type === 'accident') {
+    state.accidents++;
+    showNotif('💧', 'Logged — neutral response, change clothes, move on!');
+  } else if (type === 'dry') {
+    state.dryChecks++;
+    showNotif('✅', 'Great — staying dry!');
+  } else {
+    showNotif('🙌', 'Close call! She\'s learning!');
+  }
+
+  // Streak logic
+  const today = now.toDateString();
+  if (state.lastLogDate !== today) {
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+    state.streakDays = (state.lastLogDate === yesterday) ? state.streakDays + 1 : 1;
+    state.lastLogDate = today;
+  }
+
+  state.logEntries.unshift(entry);
+  localStorage.setItem('rc_log', JSON.stringify(state.logEntries));
+
+  saveStats();
+  updateHomeStats();
+  updateStarBoard();
+  renderTracker();
+}
+
+function showNotif(emoji, msg) {
+  const n = document.getElementById('notification');
+  document.getElementById('notifEmoji').textContent = emoji;
+  document.getElementById('notifMsg').textContent = msg;
+  n.style.display = 'flex';
+  setTimeout(() => { n.style.display = 'none'; }, 3500);
+}
+
+// ─── TIMER ───
+function selectInterval(mins, el) {
+  state.timerSelectedMinutes = mins;
+  document.querySelectorAll('.interval-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  if (!state.timerRunning) {
+    state.timerSeconds = mins * 60;
+    updateTimerDisplay();
+  }
+}
+
+function startTimer() {
+  if (state.timerRunning) return;
+  if (state.timerSeconds === 0) state.timerSeconds = state.timerSelectedMinutes * 60;
+  state.timerRunning = true;
+  document.getElementById('timerStartBtn').disabled = true;
+  document.getElementById('timerPauseBtn').disabled = false;
+  document.getElementById('homeTimerStatus').textContent = '⏱️ Timer running — ' + state.timerSelectedMinutes + ' min intervals!';
+  state.timerInterval = setInterval(() => {
+    state.timerSeconds--;
+    updateTimerDisplay();
+    if (state.timerSeconds <= 0) {
+      clearInterval(state.timerInterval);
+      state.timerRunning = false;
+      timerAlarm();
+      state.timerSeconds = state.timerSelectedMinutes * 60;
+      document.getElementById('timerStartBtn').disabled = false;
+      document.getElementById('timerPauseBtn').disabled = true;
+    }
+  }, 1000);
+}
+
+function pauseTimer() {
+  clearInterval(state.timerInterval);
+  state.timerRunning = false;
+  document.getElementById('timerStartBtn').disabled = false;
+  document.getElementById('timerPauseBtn').disabled = true;
+}
+
+function resetTimer() {
+  clearInterval(state.timerInterval);
+  state.timerRunning = false;
+  state.timerSeconds = state.timerSelectedMinutes * 60;
+  updateTimerDisplay();
+  document.getElementById('timerStartBtn').disabled = false;
+  document.getElementById('timerPauseBtn').disabled = true;
+  document.getElementById('homeTimerStatus').textContent = 'Timer reset. Go to ⏱️ Timer tab to start!';
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(state.timerSeconds / 60).toString().padStart(2,'0');
+  const s = (state.timerSeconds % 60).toString().padStart(2,'0');
+  document.getElementById('timerClock').textContent = m + ':' + s;
+  const total = state.timerSelectedMinutes * 60;
+  const elapsed = total - state.timerSeconds;
+  const pct = Math.round((elapsed / total) * 100);
+  document.getElementById('timerPhaseLabel').textContent = state.timerRunning ? '🚽 Time until next potty sit' : 'Timer ready';
+  document.getElementById('timerSubLabel').textContent = state.timerRunning ? pct + '% of interval elapsed' : 'Press ▶ Start to begin';
+}
+
+function timerAlarm() {
+  // Visual flash
+  const disp = document.getElementById('timerDisplay');
+  disp.style.background = 'linear-gradient(135deg, var(--pink) 0%, var(--orange) 100%)';
+  document.getElementById('timerPhaseLabel').textContent = '🔔 POTTY TIME! Take Rachel now!';
+  document.getElementById('timerClock').textContent = '00:00';
+  showNotif('🔔', '⏰ POTTY TIME! Guide Rachel to the bathroom now!');
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [523, 659, 784].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.3, ctx.currentTime + i * 0.18);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.18 + 0.3);
+      osc.start(ctx.currentTime + i * 0.18);
+      osc.stop(ctx.currentTime + i * 0.18 + 0.35);
+    });
+  } catch(e) {}
+  setTimeout(() => {
+    disp.style.background = 'linear-gradient(135deg, var(--blue) 0%, #c0d8ff 100%)';
+    startTimer();
+  }, 4000);
+}
+
+// ─── FLUID TRACKER ───
+function initFluidCups() {
+  const container = document.getElementById('fluidCups');
+  container.innerHTML = '';
+  for (let i = 0; i < 8; i++) {
+    const cup = document.createElement('span');
+    cup.className = 'fluid-cup' + (i < state.fluidCount ? ' filled' : '');
+    cup.textContent = '🥤';
+    cup.onclick = () => {
+      state.fluidCount = i + 1;
+      localStorage.setItem('rc_fluid', state.fluidCount);
+      initFluidCups();
+      document.getElementById('fluidCount').textContent = state.fluidCount + ' of 8 servings today';
+    };
+    container.appendChild(cup);
+  }
+  document.getElementById('fluidCount').textContent = state.fluidCount + ' of 8 servings today';
+}
+
+// ─── TRACKER ───
+function populateTimeSelect() {
+  const sel = document.getElementById('logTimeInput');
+  if (!sel) return;
+  sel.innerHTML = '';
+  const now = new Date();
+  for (let h = 6; h <= 21; h++) {
+    for (let m = 0; m < 60; m += 15) {
+      const label = h.toString().padStart(2,'0') + ':' + m.toString().padStart(2,'0');
+      const opt = document.createElement('option');
+      opt.value = label; opt.textContent = label;
+      if (h === now.getHours() && m <= now.getMinutes() && m + 15 > now.getMinutes()) opt.selected = true;
+      sel.appendChild(opt);
+    }
+  }
+}
+
+function addLogEntry() {
+  const time = document.getElementById('logTimeInput').value;
+  const type = document.getElementById('logTypeInput').value;
+  const note = document.getElementById('logNoteInput').value;
+  const entry = { id: Date.now(), time, type, note, date: new Date().toDateString() };
+
+  if (type === 'success') { state.successes++; state.stars++; }
+  if (type === 'accident') { state.accidents++; }
+
+  state.logEntries.unshift(entry);
+  localStorage.setItem('rc_log', JSON.stringify(state.logEntries));
+  document.getElementById('logNoteInput').value = '';
+
+  saveStats();
+  renderTracker();
+  updateStarBoard();
+  updateHomeStats();
+  showNotif('📝', 'Entry saved!');
+}
+
+function renderTracker() {
+  renderLogTable();
+  renderTrackerGrid();
+  renderPatternInsights();
+}
+
+function renderLogTable() {
+  const tbody = document.getElementById('logTableBody');
+  if (!tbody) return;
+  if (!state.logEntries.length) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-mid);padding:20px;">No entries yet!</td></tr>';
+    return;
+  }
+  tbody.innerHTML = state.logEntries.slice(0, 30).map((e, i) => {
+    const badgeMap = { success: 'badge-success', accident: 'badge-accident', close: 'badge-close', dry: 'badge-dry' };
+    const labelMap = { success: '🎉 Success', accident: '💧 Accident', close: '🙌 Close Call', dry: '✅ Dry' };
+    return `<tr>
+      <td>${e.time} <span style="font-size:0.75rem;color:var(--text-mid);">${e.date || ''}</span></td>
+      <td><span class="log-badge ${badgeMap[e.type]}">${labelMap[e.type]}</span></td>
+      <td>${e.note || '<span style="opacity:0.4">—</span>'}</td>
+      <td><button onclick="deleteLog(${i})" style="background:none;border:none;cursor:pointer;color:#cc3333;font-size:0.9rem;">✕</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function deleteLog(i) {
+  state.logEntries.splice(i, 1);
+  localStorage.setItem('rc_log', JSON.stringify(state.logEntries));
+  renderTracker();
+}
+
+function renderTrackerGrid() {
+  const grid = document.getElementById('trackerGrid');
+  if (!grid) return;
+  const today = state.logEntries.filter(e => e.date === new Date().toDateString());
+  grid.innerHTML = '';
+  for (let h = 6; h <= 20; h++) {
+    const cell = document.createElement('div');
+    const label = h.toString().padStart(2,'0') + ':00';
+    const match = today.find(e => e.time >= h.toString().padStart(2,'0') && e.time < (h+1).toString().padStart(2,'0'));
+    const emojiMap = { success: '🎉', accident: '💧', close: '🙌', dry: '✅' };
+    cell.className = 'tracker-cell' + (match ? ' ' + match.type : '');
+    cell.innerHTML = `${match ? emojiMap[match.type] : '○'}<span class="cell-time">${label}</span>`;
+    grid.appendChild(cell);
+  }
+}
+
+function clearGrid() {
+  state.logEntries = state.logEntries.filter(e => e.date !== new Date().toDateString());
+  localStorage.setItem('rc_log', JSON.stringify(state.logEntries));
+  renderTracker();
+}
+
+function renderPatternInsights() {
+  const el = document.getElementById('patternInsights');
+  if (!el) return;
+  const accidents = state.logEntries.filter(e => e.type === 'accident');
+  if (accidents.length < 3) { el.textContent = 'Log at least 3 accidents to see pattern insights.'; return; }
+  const hours = accidents.map(e => parseInt(e.time.split(':')[0]));
+  const freq = {};
+  hours.forEach(h => freq[h] = (freq[h] || 0) + 1);
+  const topHour = Object.entries(freq).sort((a,b) => b[1]-a[1])[0];
+  el.innerHTML = `
+    <p style="margin-bottom:8px;">📍 <strong>Most common accident time:</strong> ${topHour[0]}:00 (${topHour[1]} times)<br>
+    <em>→ Start your bathroom sits 15 minutes before this time to prevent future accidents!</em></p>
+    <p style="margin-top:10px;">Total accidents logged: <strong>${accidents.length}</strong> &nbsp;|&nbsp; 
+    Success rate: <strong>${state.successes} / ${state.successes + accidents.length} = ${Math.round(state.successes/(state.successes+accidents.length)*100)||0}%</strong></p>
+  `;
+}
+
+function exportLog() {
+  const lines = state.logEntries.map(e => `${e.date} ${e.time} — ${e.type.toUpperCase()} ${e.note ? '| '+e.note : ''}`);
+  const text = "Rachel's Potty Training Log\n" + new Date().toLocaleDateString() + "\n\n" + lines.join('\n');
+  const blob = new Blob([text], {type:'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'rachel-potty-log.txt'; a.click();
+}
+
+// ─── VISUAL STEPS ───
+function toggleVsStep(el) { el.classList.toggle('done'); }
+function resetVsSteps() { document.querySelectorAll('.vs-step').forEach(s => s.classList.remove('done')); }
+function completeAllVs() { document.querySelectorAll('.vs-step').forEach(s => s.classList.add('done')); }
+
+function initPrintCards() {
+  const steps = [
+    {icon:'🚶',label:'Walk to Bathroom'},
+    {icon:'💡',label:'Light On'},
+    {icon:'👇',label:'Pants Down'},
+    {icon:'🪑',label:'Sit on Potty'},
+    {icon:'⏳',label:'Wait & Try'},
+    {icon:'🧻',label:'Wipe'},
+    {icon:'👆',label:'Pants Up'},
+    {icon:'🚽',label:'Flush'},
+    {icon:'🚿',label:'Wash Hands'},
+    {icon:'🎉',label:'Celebrate!'}
+  ];
+  const container = document.getElementById('printCards');
+  if (!container) return;
+  container.innerHTML = steps.map(s =>
+    `<div style="background:white;border:3px solid var(--pink);border-radius:12px;padding:14px;text-align:center;">
+      <div style="font-size:2.2rem;">${s.icon}</div>
+      <div style="font-family:'Handlee',cursive;font-size:0.85rem;margin-top:6px;">${s.label}</div>
+    </div>`
+  ).join('');
+}
+
+function printCards() {
+  window.print();
+}
+
+function printStory() {
+  window.print();
+}
+
+// ─── STEP TOGGLE ───
+function toggleStep(el) { el.classList.toggle('done'); }
+
+// ─── ACCORDION ───
+function toggleAccordion(header) {
+  const body = header.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  document.querySelectorAll('.accordion-body.open').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('.accordion-header.open').forEach(h => h.classList.remove('open'));
+  if (!isOpen) { body.classList.add('open'); header.classList.add('open'); }
+}
+
+// ─── STARS ───
+function updateStarBoard() {
+  const board = document.getElementById('starBoard');
+  if (!board) return;
+  const count = state.stars;
+  board.innerHTML = '';
+  const total = Math.max(20, count + 5);
+  for (let i = 0; i < total; i++) {
+    const star = document.createElement('span');
+    star.className = 'star' + (i < count ? ' lit' : '');
+    star.textContent = i < count ? '⭐' : '☆';
+    star.style.animationDelay = (i * 0.03) + 's';
+    board.appendChild(star);
+  }
+  const countEl = document.getElementById('starCount');
+  if (countEl) countEl.textContent = count + ' ⭐';
+}
+
+function addStar() {
+  state.stars++;
+  updateStarBoard();
+  saveStats();
+  showNotif('⭐', 'Star added! ' + state.stars + ' total!');
+}
+
+function clearStars() {
+  if (confirm('Clear all stars? This cannot be undone.')) {
+    state.stars = 0;
+    localStorage.setItem('rc_stars', 0);
+    updateStarBoard();
+  }
+}
+
+function addCustomReward() {
+  const emoji = document.getElementById('rewardEmoji').value || '🎁';
+  const name = document.getElementById('rewardName').value;
+  const threshold = document.getElementById('rewardThreshold').value;
+  if (!name) return;
+  const row = document.createElement('div');
+  row.className = 'reward-row';
+  row.innerHTML = `
+    <div class="reward-emoji">${emoji}</div>
+    <div class="reward-info">
+      <div class="reward-name">${name}</div>
+      <div class="reward-stars">${threshold} ⭐ needed</div>
+    </div>
+    <button onclick="this.parentElement.remove()" style="background:none;border:none;cursor:pointer;font-size:1.1rem;color:#cc3333;">✕</button>
+  `;
+  document.getElementById('rewardsList').appendChild(row);
+  document.getElementById('rewardEmoji').value = '';
+  document.getElementById('rewardName').value = '';
+  document.getElementById('rewardThreshold').value = '';
+}
+
+// ─── CELEBRATE ───
+function celebrate() {
+  const modal = document.getElementById('celebrationModal');
+  const msgs = [
+    { emoji: '🎉', title: 'Rachel did it!', msg: 'That\'s a real win! Give her her reward RIGHT NOW — within 3 seconds!' },
+    { emoji: '⭐', title: 'Star earned!', msg: 'She\'s learning! Celebrate loud and proud — Rachel loves seeing you happy!' },
+    { emoji: '🏆', title: 'Yes!! She went!', msg: 'This is the work paying off. Reward and celebrate — go go go!' },
+    { emoji: '🌟', title: 'Potty Success!', msg: 'Every success builds the habit. You\'re both doing amazing!' }
+  ];
+  const m = msgs[Math.floor(Math.random() * msgs.length)];
+  document.getElementById('celebEmoji').textContent = m.emoji;
+  document.getElementById('celebTitle').textContent = m.title;
+  document.getElementById('celebMsg').textContent = m.msg;
+  modal.classList.add('open');
+  spawnConfetti();
+}
+
+function closeModal() {
+  document.getElementById('celebrationModal').classList.remove('open');
+}
+
+function spawnConfetti() {
+  const container = document.getElementById('confetti');
+  container.innerHTML = '';
+  const colors = ['#ff5994','#ff9668','#edff8f','#84ff9f','#82b6ff'];
+  for (let i = 0; i < 60; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.top = '-20px';
+    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+    p.style.animationDelay = Math.random() * 1.5 + 's';
+    p.style.animationDuration = (1.5 + Math.random()) + 's';
+    p.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+    container.appendChild(p);
+  }
+  setTimeout(() => { container.innerHTML = ''; }, 4000);
+}
+
+// ─── BREATHING ───
+function startBreathing() {
+  const circle = document.getElementById('breatheCircle');
+  const instructions = document.getElementById('breatheInstructions');
+  clearTimeout(state.breatheTimeout);
+  // Inhale 4s
+  circle.className = 'breathe-circle inhale';
+  circle.innerHTML = 'Breathe<br>IN';
+  instructions.textContent = 'Slowly breathe in... 1... 2... 3... 4...';
+  state.breatheTimeout = setTimeout(() => {
+    // Hold 7s
+    circle.className = 'breathe-circle hold';
+    circle.innerHTML = 'HOLD';
+    instructions.textContent = 'Hold... 1... 2... 3... 4... 5... 6... 7...';
+    state.breatheTimeout = setTimeout(() => {
+      // Exhale 8s
+      circle.className = 'breathe-circle exhale';
+      circle.innerHTML = 'Breathe<br>OUT';
+      instructions.textContent = 'Slowly breathe out... 1... 2... 3... 4... 5... 6... 7... 8...';
+      state.breatheTimeout = setTimeout(() => {
+        circle.className = 'breathe-circle';
+        circle.innerHTML = 'Tap to<br>breathe';
+        instructions.textContent = 'Click again for another cycle. You\'ve got this. 💙';
+      }, 8000);
+    }, 7000);
+  }, 4000);
+}
+
+// ─── 6-WEEK PLAN CONTENT ───
+const weekPlans = [
+  null, // 0 index
+  {
+    title: 'Week 1 — All In',
+    color: 'var(--pink)',
+    items: [
+      '📅 Day 1: Switch to real underwear during all waking hours. Let Rachel pick them out!',
+      '⏱️ Set timer for every 20-30 minutes — prompt cheerfully on every bell.',
+      '💧 Offer extra fluids throughout the day — juice, water, milk — more practice opportunities.',
+      '🎯 Prompt Rachel to the bathroom every alarm and after every meal.',
+      '⏳ Target 2-3 minute sits — give her a book or small toy to help her stay and relax.',
+      '🎁 Celebrate every success immediately — sticker on the chart, big hugs, happy voices!',
+      '📝 Log every success, accident, and close call — patterns will appear by end of week.',
+      '👗 Dress her in easy clothing — loose pants or a dress, nothing with tights or snaps.',
+      '❌ Never react negatively to accidents — calm, neutral, "oops, let\'s change" and move on.',
+      '💪 Expect several accidents in the first few days. That is completely normal and expected.'
+    ]
+  },
+  {
+    title: 'Week 2 — Find the Pattern',
+    color: 'var(--orange)',
+    items: [
+      '📊 Review your log. When do most accidents happen? Is there a time-of-day pattern?',
+      '🎯 Add a bathroom sit 15-20 minutes BEFORE your most common accident time.',
+      '⏱️ Keep intervals at 20-30 min — consistency matters more than interval length right now.',
+      '💧 Keep fluids generous on intensive training days.',
+      '🧴 Make hand-washing the final step every time — it completes the routine.',
+      '🔔 Celebrate every success loudly and enthusiastically — she loves seeing you happy!',
+      '📈 Even a 30-40% success rate this week is genuine, real progress.',
+      '🏫 If Rachel is in daycare or preschool, share your approach so they stay consistent.',
+      '🎨 Let her decorate her sticker chart or pick new stickers this week — ownership builds motivation.',
+      '💊 Signs of constipation or hard stools? Call the pediatrician this week — don\'t push through.'
+    ]
+  },
+  {
+    title: 'Week 3 — Building Confidence',
+    color: '#8aaa00',
+    items: [
+      '📈 Extend timer to 30-35 minutes if success rate is consistently improving.',
+      '🔍 Watch for any self-initiation signs — fidgeting, pausing play, moving toward the bathroom.',
+      '🌟 Praise her initiative even if she mentions needing to go and then doesn\'t produce!',
+      '🎁 Consider a token board: 3 stickers = a special reward or activity she loves.',
+      '💧 Continue generous fluids on training days.',
+      '📋 Check in with daycare/preschool on how training is going there — adjust together if needed.',
+      '🔄 Review the reward: is it still exciting? Try a new sticker sheet or a different small treat.',
+      '🚽 Bowel training: don\'t push — keep the bathroom low-pressure and poop will follow on its own.',
+      '🧘 Caregiver check: how are YOU holding up? Potty training is exhausting — take breaks.',
+      '📊 Your success rate should be climbing clearly by the end of this week.'
+    ]
+  },
+  {
+    title: 'Week 4 — Stretch the Intervals',
+    color: 'var(--blue-dark)',
+    items: [
+      '⏱️ Extend to 35-45 minute intervals if consistently succeeding.',
+      '🔽 Start fading prompts — verbal cue only, then pause and let her initiate.',
+      '💬 Encourage her to use her words: "I need to go potty" — celebrate any self-initiation!',
+      '🎉 Celebrate successes even bigger — she\'s really getting it!',
+      '🏫 Coordinate with daycare/preschool on current interval length.',
+      '💊 Follow up with pediatrician if any bowel concerns persist after 4 weeks.',
+      '🔄 Regression after illness or a big life change is normal — restart with shorter intervals.',
+      '🎯 Keep focus on daytime urine mastery — bowel will follow on its own timeline.',
+      '🗓️ Halfway to the 6-week goal — celebrate how far you\'ve both come!',
+      '📝 Any independent self-initiation = huge milestone. Note the time and celebrate BIG!'
+    ]
+  },
+  {
+    title: 'Week 5 — Independence Emerging',
+    color: 'var(--green-dark)',
+    items: [
+      '⏱️ Extend to 45-60 minute intervals if doing consistently well.',
+      '🔽 Reduce prompts further — let her feel the urge and tell you.',
+      '🌟 Watch for independent trips to the bathroom and respond with THE BIGGEST celebration.',
+      '🏠 Generalization: practice in at least one other bathroom this week (store, grandma\'s).',
+      '🎁 Shift sticker reward to intermittent — not every single time.',
+      '📊 Your data should show a clear upward trend by now.',
+      '🧘 Rachel should be approaching comfortable, confident bathroom trips.',
+      '🔄 If progress has stalled for 2+ weeks despite full consistency: call the pediatrician.',
+      '💬 Keep reinforcing "I need to go" language — self-initiation is the final milestone.',
+      '💪 You are SO close. The last stretch is real. She\'s almost there.'
+    ]
+  },
+  {
+    title: 'Week 6 — Crossing the Line',
+    color: '#9a7a00',
+    items: [
+      '🎯 Goal: 60-70%+ daytime success with minimal prompting.',
+      '⏱️ Intervals at 60 minutes or fully responding to Rachel\'s self-initiation.',
+      '🏆 Major celebration for reaching week 6 — for BOTH of you! This is huge.',
+      '🌍 Generalize to all bathroom settings: stores, restaurants, grandparents\' homes.',
+      '🌙 Assess nighttime: is Rachel waking dry after naps consistently?',
+      '🔽 Fade tangible rewards gradually — shift to verbal praise, hugs, and big-girl pride.',
+      '📋 Let Rachel know how proud you are and how hard she worked — she did this.',
+      '🧘 Reflect on what worked best — your log tells the real story.',
+      '📈 Daytime mastery solid? Nighttime training can begin next month if she\'s ready.',
+      '🥳 You both did it. This is hard, important, real work. Be incredibly proud.'
+    ]
+  }
+];
+
+let currentWeek = 0;
+
+function changeWeek(dir) {
+  currentWeek = Math.max(0, Math.min(6, currentWeek + dir));
+  renderWeekPlan();
+}
+
+function renderWeekPlan() {
+  const content = document.getElementById('planContent');
+  const label = document.getElementById('weekLabel');
+  if (currentWeek === 0) {
+    label.textContent = 'Full Overview';
+    content.innerHTML = `<div class="info-box">Tap the arrows to view each week's specific action plan, or scroll down for the full timeline.</div>`;
+    return;
+  }
+  const plan = weekPlans[currentWeek];
+  label.textContent = plan.title;
+  content.innerHTML = `
+    <div class="card" style="border-color:${plan.color};">
+      <div class="card-title" style="color:${plan.color};">📅 ${plan.title}</div>
+      <ul class="checklist" id="weekChecklist">
+        ${plan.items.map(item => `<li><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">${item}</span></li>`).join('')}
+      </ul>
+    </div>
+  `;
+}
+
+// ─── INIT ───
+function init() {
+  updateTimerDisplay();
+  initFluidCups();
+  populateTimeSelect();
+  updateStarBoard();
+  updateHomeStats();
+  renderTracker();
+  initPrintCards();
+  renderWeekPlan();
+}
+
+init();
+</script>
+</body>
+</html>
