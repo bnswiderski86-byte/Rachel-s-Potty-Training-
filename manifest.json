@@ -1,8 +1,9 @@
 {
   "name": "Rachel's Potty Journey",
-  "short_name": "Rachel \ud83d\udebd",
+  "short_name": "Rachel 🚽",
   "description": "Potty training tracker for Rachel",
-  "start_url": "/Rachel-s-Potty-Training-/",
+  "start_url": "/Rachel-s-Potty-Training-/index.html",
+  "scope": "/Rachel-s-Potty-Training-/",
   "display": "standalone",
   "background_color": "#fff5f9",
   "theme_color": "#ff5994",
